@@ -1,35 +1,24 @@
 import express from 'express';
-import { Pool } from 'pg';
+import bodyParser from 'body-parser';
+import authRoutes from './routes/authRoutes';
+import adminRoutes from './routes/adminRoutes';
+import { connectDB } from './db';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
+
 const app = express();
-const port = process.env.PORT || 3000;
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+app.use(bodyParser.json());
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
+const startServer = async () => {
+  await connectDB();
+  app.listen(8080, () => {
+    console.log('Server is running on port 8080');
+  });
+};
 
-async function testDbConnection() {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT NOW()');
-    console.log('Successfully connected to the database. Current time:', result.rows[0].now);
-    client.release();
-  } catch (err) {
-    console.error('Error connecting to the database:', err);
-    process.exit(1);
-  }
-}
-
-// Call the function to test the connection
-testDbConnection();
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+startServer();
