@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
+import medicalProfileRoutes from './routes/medicalProfileRoutes';
 import { connectDB } from './db';
 import dotenv from 'dotenv';
 
@@ -13,7 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/medical-profile', medicalProfileRoutes);
 const startServer = async () => {
   await connectDB();
   app.listen(8080, () => {
