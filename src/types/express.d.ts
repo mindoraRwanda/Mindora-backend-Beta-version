@@ -6,6 +6,9 @@ declare global {
       user?: {
         userId: string;
       };
+      file?: {
+        path: string;
+      };
     }
   }
 }
