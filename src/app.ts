@@ -18,8 +18,8 @@ app.use('/api/medical-profile', medicalProfileRoutes);
 const startServer = async () => {
   await connectDB();
   app.listen(8080, () => {
-    console.log('Server is running on port 8080');
-  });
+    console.log('Server is running on port 8080 🚀');
+  })
 };
 
 startServer();
