@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { createAdmin, getAdminByEmail } from '../models/Admin';
 import { createTherapist, getTherapistByEmail } from '../models/Therapist';
 import { createNormalUser, getNormalUserByEmail } from '../models/NormalUser';
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
@@ -35,15 +37,42 @@ export const therapistSignUp = async (req: Request, res: Response) => {
 };
 
 export const normalUserSignUp = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, name, username, phone_number } = req.body;
+  const profile_picture = req.file?.path;
+
+  console.log('Received data:', { email, password, name, username, phone_number, profile_picture });
+  
+  if (!profile_picture) {
+    return res.status(400).json({ error: 'Profile picture is required' });
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await createNormalUser({ id: uuidv4(), email, password: hashedPassword });
+
+    // Upload the image to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(profile_picture, {
+      folder: 'profile_pictures',
+    });
+
+    // Delete the local file after uploading to Cloudinary
+    fs.unlinkSync(profile_picture);
+
+    const user = await createNormalUser({
+      email,
+      password: hashedPassword,
+      name,
+      username,
+      phone_number,
+      profile_picture: uploadResponse.secure_url, // Use the Cloudinary URL
+    });
+
     res.status(201).json(user);
   } catch (error) {
+    console.error('Error during user signup:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -72,5 +101,6 @@ export const login = async (req: Request, res: Response) => {
     res.status(200).json({ token, profile: user });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
+    
   }
 };
