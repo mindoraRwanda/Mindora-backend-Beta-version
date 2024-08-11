@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes";
 import adminRoutes from "./routes/adminRoutes";
+import medicalProfileRoutes from './routes/medicalProfileRoutes';
 import { connectDB } from "./db";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
@@ -57,12 +58,12 @@ io.on("connection", (socket) => {
     io.emit("getOnlineUsers", onlineUsers);
   });
 });
-
+app.use('/api/medical-profile', medicalProfileRoutes);
 const startServer = async () => {
   await connectDB();
   server.listen(8080, () => {
-    console.log("Server is running on port 8080");
-  });
+    console.log("Server is running on port 8080 🚀");
+  })
 };
 
 startServer();
