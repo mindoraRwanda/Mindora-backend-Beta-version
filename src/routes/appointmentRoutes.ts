@@ -10,7 +10,7 @@ import {
 
 const router = Router();
 
-router.post('/', createAppointmentController);
+router.post('/createAppointment', createAppointmentController);
 router.put('/', updateAppointmentController);
 router.delete('/', deleteAppointmentController);
 router.get('/', getAppointmentsController);
