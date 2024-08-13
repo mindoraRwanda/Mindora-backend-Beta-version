@@ -1,35 +1,69 @@
-import express from 'express';
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import express from "express";
+import bodyParser from "body-parser";
+import authRoutes from "./routes/authRoutes";
+import adminRoutes from "./routes/adminRoutes";
+import medicalProfileRoutes from './routes/medicalProfileRoutes';
+import { connectDB } from "./db";
+import dotenv from "dotenv";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import messageRoutes from "./routes/messageRoutes";
+import emergencyContactsRoutes from "./routes/emegergencyContactsRoutes";
+// import { sendMessage } from './controllers/messageController';
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+// integrates socket server
+const server = createServer(app);
+const io = new Server(server);
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+app.use(bodyParser.json());
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/contacts", emergencyContactsRoutes);
+
+let onlineUsers: Array<any> = [];
+
+// tests socket connection
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  // socket.on("message:send", async (msg) => {
+  //   await sendMessage(msg, socket);
+  // })
+  socket.on("addNewUser", (userId) => {
+    !onlineUsers.some((user) => user.userId === userId) &&
+      onlineUsers.push({ userId, socketId: socket.id });
+    console.log(onlineUsers);
+    io.emit("getOnlineUsers", onlineUsers);
+  });
+
+  socket.on("sendMessage", (message) => {
+    const user = onlineUsers.find((user) => user.userId === message.receiverId);
+    // send private message
+    if (user) {
+      io.to(user.socketId).emit("getMessage", message);
+      // send message notification
+      io.to(user.socketId).emit("getNotification", {
+        senderId: message.senderId,
+        isRead: false,
+        date: new Date(),
+      });
+    }
+  });
+
+  socket.on("disconnect", () => {
+    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+    io.emit("getOnlineUsers", onlineUsers);
+  });
 });
+app.use('/api/medical-profile', medicalProfileRoutes);
+const startServer = async () => {
+  await connectDB();
+  server.listen(8080, () => {
+    console.log("Server is running on port 8080 🚀");
+  })
+};
 
-
-async function testDbConnection() {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT NOW()');
-    console.log('Successfully connected to the database. Current time:', result.rows[0].now);
-    client.release();
-  } catch (err) {
-    console.error('Error connecting to the database:', err);
-    process.exit(1);
-  }
-}
-
-// Call the function to test the connection
-testDbConnection();
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+startServer();
