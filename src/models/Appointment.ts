@@ -16,7 +16,7 @@ export const createAppointment = async (appointment: Appointment) => {
   const client: PoolClient = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO appointments (userId, providerId, appointmentTime, status) 
+      `INSERT INTO appointments (user_id, provider_id, appointment_time, status) 
        VALUES ($1, $2, $3, $4) RETURNING *`,
       [appointment.userId, appointment.providerId, appointment.appointmentTime, appointment.status]
     );
@@ -56,7 +56,7 @@ export const deleteAppointment = async (id: number) => {
   const client: PoolClient = await pool.connect();
   try {
     const result = await client.query(
-      `DELETE FROM appointments WHERE id = $1 RETURNING *`,
+      `DELETE FROM appointments WHERE id = $1 RETURNING*`,
       [id]
     );
     if (result.rows.length === 0) return null;
