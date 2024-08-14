@@ -2,17 +2,6 @@ import { PoolClient } from "pg";
 import pool from "../db";
 import { v4 as uuidv4 } from "uuid";
 
-// CREATE TABLE ProgressReports (
-//     report_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-//     user_id UUID NOT NULL,
-//     start_date DATE NOT NULL,
-//     end_date DATE NOT NULL,
-//     mood_summary JSONB,
-//     symptom_summary JSONB,
-//     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     FOREIGN KEY (user_id) REFERENCES Users(user_id)
-// );
-
 interface MoodSummary {
   averageRating: number;
   mostFrequentMood: string | null;
@@ -200,15 +189,13 @@ export const generateReport = async (
       endDate: endDate,
       moodSummary: moodSummary,
       symptomSummary: symptomSummary,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     // Insert the report into the database
-    await client.query(
+    const { rows } = await client.query(
       `
-      INSERT INTO Reports (id, user_id, start_date, end_date, mood_summary, symptom_summary, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO Reports (id, userId, startDate, endDate, moodSummary, symptomSummary)
+      VALUES ($1, $2, $3, $4, $5, $6)
       `,
       [
         report.id,
@@ -217,15 +204,128 @@ export const generateReport = async (
         report.endDate,
         JSON.stringify(report.moodSummary),
         JSON.stringify(report.symptomSummary),
-        report.createdAt,
-        report.updatedAt,
       ]
     );
 
-    return report;
+    return rows[0];
   } catch (err) {
     console.error("Failed to generate report:", err);
     throw new Error("Failed to generate report.");
+  } finally {
+    client.release();
+  }
+};
+
+// get the progress report
+
+export const getProgressReportById = async (
+  id: string
+): Promise<Report | null> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const result = await client.query(
+      `
+      SELECT *
+      FROM ProgressReports
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows[0];
+  } catch (err) {
+    console.error("Failed to retrieve report:", err);
+    throw new Error("Failed to retrieve report.");
+  } finally {
+    client.release();
+  }
+};
+
+export const getProgressReportsByUserId = async (
+  userId: string,
+  startDate?: Date,
+  endDate?: Date
+): Promise<Report[]> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const result = await client.query(
+      `
+      SELECT *
+      FROM ProgressReports
+      WHERE userId = $1
+      AND ($2::date IS NULL OR startDate >= $2)
+      AND ($3::date IS NULL OR endDate <= $3)
+      `,
+      [userId, startDate, endDate]
+    );
+
+    return result.rows[0];
+  } catch (err) {
+    console.error("Failed to retrieve reports:", err);
+    throw new Error("Failed to retrieve reports.");
+  } finally {
+    client.release();
+  }
+};
+
+// update the report
+
+export const updateUserProgressReport = async (
+  reportId: string,
+  updatedMoodSummary: MoodSummary,
+  updatedSymptomSummary: SymptomSummary
+): Promise<Report | null> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const result = await client.query(
+      `
+      UPDATE ProgressReports
+      SET moodSummary = $1, symptomSummary = $2, updatedAt = CURRENT_TIMESTAMP
+      WHERE id = $3
+      RETURNING *
+      `,
+      [
+        JSON.stringify(updatedMoodSummary),
+        JSON.stringify(updatedSymptomSummary),
+        reportId,
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+  } catch (err) {
+    console.error("Failed to update report:", err);
+    throw new Error("Failed to update report.");
+  } finally {
+    client.release();
+  }
+};
+
+// Delete a Progress Report
+
+export const deleteUserProgressReport = async (
+  reportId: string
+): Promise<boolean> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const result = await client.query(
+      `
+      DELETE FROM ProgressReports
+      WHERE id = $1 RETURNING *
+      `,
+      [reportId]
+    );
+
+    return result.rows[0];
+  } catch (err) {
+    console.error("Failed to delete report:", err);
+    throw new Error("Failed to delete report.");
   } finally {
     client.release();
   }

@@ -17,7 +17,7 @@ export const createChat = async (req: Request, res: Response) => {
       id: uniqueId,
     });
     if (!savedChat) {
-      return res.status(500).json({ Error: "Failed to save the chat in db" });
+      return res.status(500).json({ Error: "Failed to save a chat in db" });
     }
 
     return res.status(201).json(savedChat);
