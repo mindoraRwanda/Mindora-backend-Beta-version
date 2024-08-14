@@ -58,3 +58,38 @@ export const getUserSymptoms = async (userId: string): Promise<Symptom[]> => {
     client.release();
   }
 };
+
+export const updateUserSymptoms = async (
+  symptom: Symptom
+): Promise<Symptom | undefined> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `UPDATE symptoms SET symptom = $1, severity = $2, frequency = $3, onset = $4, description = $5 WHERE id = $6 RETURNING *`,
+      [
+        symptom.symptom,
+        symptom.severity,
+        symptom.frequency,
+        symptom.onset,
+        symptom.description,
+        symptom.id,
+      ]
+    );
+    return rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteUserSymptoms = async (id: string): Promise<Symptom[]> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `DELETE FROM symptoms WHERE symptoms.id = $1 RETURNING *`,
+      [id]
+    );
+    return rows[0];
+  } finally {
+    client.release();
+  }
+};
