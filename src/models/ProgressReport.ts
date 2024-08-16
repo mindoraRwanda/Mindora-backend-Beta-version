@@ -9,7 +9,7 @@ interface MoodSummary {
 }
 
 interface SymptomSummary {
-  averageSeverity: number;
+  mostSeverity: string;
   mostFrequentSymptom: string;
   symptomDistribution?: { [symptom: string]: number | undefined }; // Example: { "Fatigue": 7, "Headache": 3 }
 }
@@ -29,14 +29,16 @@ const generateMoodSummary = async (
   userId: string,
   startDate: Date,
   endDate: Date
-): Promise<MoodSummary | undefined> => {
+): Promise<MoodSummary> => {
+  console.log("mood: ", startDate);
+  console.log("mood: ", endDate);
   const client: PoolClient = await pool.connect();
   try {
     const result = await client.query(
       `
       SELECT mood, COUNT(*) AS count
-      FROM Moods
-      WHERE user_id = $1
+      FROM moods
+      WHERE userId = $1
       AND date BETWEEN $2 AND $3
       GROUP BY mood
     `,
@@ -52,8 +54,8 @@ const generateMoodSummary = async (
     const query = await client.query(
       `
       SELECT mood, COUNT(*) AS count
-      FROM Moods
-      WHERE user_id = $1
+      FROM moods
+      WHERE userId = $1
       AND date BETWEEN $2 AND $3
       GROUP BY mood
       ORDER BY count DESC
@@ -68,14 +70,14 @@ const generateMoodSummary = async (
     const queryResult = await client.query(
       `
     SELECT AVG(rating) AS average_rating
-    FROM Moods
-    WHERE user_id = $1
+    FROM moods
+    WHERE userId = $1
     AND date BETWEEN $2 AND $3;
   `,
       [userId, startDate, endDate]
     );
 
-    const averageRating = parseFloat(result.rows[0]?.average_rating || 0);
+    const averageRating = parseFloat(queryResult.rows[0]?.average_rating || 0);
     const moodSummary = {
       averageRating: averageRating,
       mostFrequentMood: mostFrequentMood,
@@ -84,6 +86,7 @@ const generateMoodSummary = async (
     return moodSummary;
   } catch (err) {
     console.log(err);
+    throw err;
   } finally {
     client.release();
   }
@@ -96,17 +99,21 @@ const generateSymptomSummary = async (
 ): Promise<SymptomSummary> => {
   const client: PoolClient = await pool.connect();
   try {
+    console.log("symproms: ", startDate);
+    console.log("symptoms: ", endDate);
     // Symptom distribution query
     const distributionResult = await client.query(
       `
       SELECT symptom, COUNT(*) AS count
-      FROM Symptoms
-      WHERE user_id = $1
-      AND date BETWEEN $2 AND $3
+      FROM symptoms
+      WHERE userId = $1
+      AND onset BETWEEN $2 AND $3
       GROUP BY symptom
     `,
       [userId, startDate, endDate]
     );
+
+    console.log("distribution symptom: ", distributionResult.rows);
 
     const symptomDistribution = distributionResult.rows.reduce((acc, row) => {
       acc[row.symptom] = parseInt(row.count, 10);
@@ -117,9 +124,9 @@ const generateSymptomSummary = async (
     const frequentSymptomResult = await client.query(
       `
       SELECT symptom, COUNT(*) AS count
-      FROM Symptoms
-      WHERE user_id = $1
-      AND date BETWEEN $2 AND $3
+      FROM symptoms
+      WHERE userId = $1
+      AND onset BETWEEN $2 AND $3
       GROUP BY symptom
       ORDER BY count DESC
       LIMIT 1
@@ -132,21 +139,22 @@ const generateSymptomSummary = async (
     // Average severity query
     const severityResult = await client.query(
       `
-      SELECT AVG(severity) AS average_severity
-      FROM Symptoms
-      WHERE user_id = $1
-      AND date BETWEEN $2 AND $3
+      SELECT severity, COUNT(*) AS most_severity
+      FROM symptoms
+      WHERE userId = $1
+      AND onset BETWEEN $2 AND $3
+      GROUP BY severity
+      ORDER BY most_severity DESC
+      LIMIT 1
     `,
       [userId, startDate, endDate]
     );
 
-    const averageSeverity = parseFloat(
-      severityResult.rows[0]?.average_severity || 0
-    );
+    const mostSeverity = severityResult.rows[0]?.severity || "";
 
     // Constructing the SymptomSummary object
     const symptomSummary: SymptomSummary = {
-      averageSeverity: averageSeverity,
+      mostSeverity: mostSeverity,
       mostFrequentSymptom: mostFrequentSymptom,
       symptomDistribution: symptomDistribution,
     };
@@ -154,7 +162,7 @@ const generateSymptomSummary = async (
     return symptomSummary;
   } catch (err) {
     console.error(err);
-    throw new Error("Failed to generate symptom summary.");
+    throw err;
   } finally {
     client.release();
   }
@@ -168,11 +176,11 @@ export const generateReport = async (
   const client: PoolClient = await pool.connect();
   try {
     // Generate mood summary
-    const moodSummary: MoodSummary = (await generateMoodSummary(
+    const moodSummary: MoodSummary = await generateMoodSummary(
       userId,
       startDate,
       endDate
-    )) || { averageRating: 0, mostFrequentMood: null, moodDistribution: {} };
+    );
 
     // Generate symptom summary
     const symptomSummary: SymptomSummary = await generateSymptomSummary(
@@ -194,8 +202,8 @@ export const generateReport = async (
     // Insert the report into the database
     const { rows } = await client.query(
       `
-      INSERT INTO Reports (id, userId, startDate, endDate, moodSummary, symptomSummary)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO progress_reports (id, user_id, start_date, end_date, mood_summary, symptom_summary)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
       `,
       [
         report.id,
@@ -210,7 +218,7 @@ export const generateReport = async (
     return rows[0];
   } catch (err) {
     console.error("Failed to generate report:", err);
-    throw new Error("Failed to generate report.");
+    throw err;
   } finally {
     client.release();
   }
@@ -226,7 +234,7 @@ export const getProgressReportById = async (
     const result = await client.query(
       `
       SELECT *
-      FROM ProgressReports
+      FROM progress_reports
       WHERE id = $1
       `,
       [id]
@@ -238,7 +246,7 @@ export const getProgressReportById = async (
     return result.rows[0];
   } catch (err) {
     console.error("Failed to retrieve report:", err);
-    throw new Error("Failed to retrieve report.");
+    throw err;
   } finally {
     client.release();
   }
@@ -250,22 +258,23 @@ export const getProgressReportsByUserId = async (
   endDate?: Date
 ): Promise<Report[]> => {
   const client: PoolClient = await pool.connect();
+  console.log(userId, startDate, endDate);
   try {
     const result = await client.query(
       `
       SELECT *
-      FROM ProgressReports
-      WHERE userId = $1
-      AND ($2::date IS NULL OR startDate >= $2)
-      AND ($3::date IS NULL OR endDate <= $3)
+      FROM progress_reports
+      WHERE user_id = $1
+      AND ($2::date IS NULL OR start_date >= $2)
+      AND ($3::date IS NULL OR end_date <= $3)
       `,
       [userId, startDate, endDate]
     );
-
+    console.log("result", result.rows[0]);
     return result.rows[0];
   } catch (err) {
     console.error("Failed to retrieve reports:", err);
-    throw new Error("Failed to retrieve reports.");
+    throw err;
   } finally {
     client.release();
   }
@@ -282,8 +291,8 @@ export const updateUserProgressReport = async (
   try {
     const result = await client.query(
       `
-      UPDATE ProgressReports
-      SET moodSummary = $1, symptomSummary = $2, updatedAt = CURRENT_TIMESTAMP
+      UPDATE progress_reports
+      SET mood_summary = $1, symptom_summary = $2, updated_at = CURRENT_TIMESTAMP
       WHERE id = $3
       RETURNING *
       `,
@@ -301,7 +310,7 @@ export const updateUserProgressReport = async (
     return result.rows[0];
   } catch (err) {
     console.error("Failed to update report:", err);
-    throw new Error("Failed to update report.");
+    throw err;
   } finally {
     client.release();
   }
@@ -311,12 +320,12 @@ export const updateUserProgressReport = async (
 
 export const deleteUserProgressReport = async (
   reportId: string
-): Promise<boolean> => {
+): Promise<Report> => {
   const client: PoolClient = await pool.connect();
   try {
     const result = await client.query(
       `
-      DELETE FROM ProgressReports
+      DELETE FROM progress_reports
       WHERE id = $1 RETURNING *
       `,
       [reportId]
@@ -325,7 +334,7 @@ export const deleteUserProgressReport = async (
     return result.rows[0];
   } catch (err) {
     console.error("Failed to delete report:", err);
-    throw new Error("Failed to delete report.");
+    throw err;
   } finally {
     client.release();
   }

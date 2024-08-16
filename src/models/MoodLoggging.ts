@@ -32,6 +32,21 @@ export const createMood = async (mood: Mood) => {
   }
 };
 
+export const updateUserMood = async (mood: Mood) => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `UPDATE moods SET mood = $1, rating = $2, description = $3, condition = $4 WHERE id = $5 RETURNING *`,
+      [mood.mood, mood.rating, mood.description, mood.condition, mood.id]
+    );
+    return rows[0];
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.release();
+  }
+};
+
 export const getUserMood = async (
   userId: string
 ): Promise<Mood[] | undefined> => {
@@ -45,6 +60,25 @@ export const getUserMood = async (
       return undefined;
     }
     return rows;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteUserMood = async (id: string): Promise<Mood | undefined> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `DELETE FROM moods WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    if (rows.length === 0) {
+      console.log("rows deleted", rows);
+      return;
+    }
+    return rows[0];
   } catch (err) {
     console.log(err);
   } finally {

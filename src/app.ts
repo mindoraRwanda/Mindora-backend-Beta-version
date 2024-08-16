@@ -13,7 +13,11 @@ import symptomLoggingRoutes from './routes/symptomLoggingRoutes'; // Existing ro
 import systemConfigurationRoutes from './routes/systemConfigurationRoutes'; 
 =======
 import medicalProfileRoutes from "./routes/medicalProfileRoutes";
+<<<<<<< HEAD
 >>>>>>> 25359b0 (API: mood logging)
+=======
+import progressReportRoutes from "./routes/progressRoutes";
+>>>>>>> 1640833 (API: mood looging, emergency contact and progress report)
 import { connectDB } from "./db";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
@@ -48,7 +52,11 @@ app.use('/api/system-configurations', systemConfigurationRoutes); // Add new rou
 =======
 app.use("/api/contacts", emergencyContactsRoutes);
 app.use("/api/mood", moodRoutes);
+<<<<<<< HEAD
 >>>>>>> 25359b0 (API: mood logging)
+=======
+app.use("/api/report", progressReportRoutes);
+>>>>>>> 1640833 (API: mood looging, emergency contact and progress report)
 
 let onlineUsers: Array<any> = [];
 

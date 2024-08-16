@@ -13,22 +13,29 @@ export const generateProgressReport = async (req: Request, res: Response) => {
   if (!userId || !startDate || !endDate) {
     res.status(400).json({ Error: "Missing parameter(s)!" });
   }
+  // Creating a date object
+  // const from = new Date(startDate);
+  // from.setHours(from.getHours() + 3);
+  // const to = new Date(endDate);
+  // to.setHours(to.getHours() + 3);
 
+  // console.log("Before", from);
   try {
-    const rows = await generateReport(userId, startDate, endDate);
-    res.status(201).json(rows);
+    const generatedRow = await generateReport(userId, startDate, endDate);
+    if (!generatedRow) {
+      return res.status(500).json({ Error: "Failed to generate report" });
+    }
+    res.status(201).json(generatedRow);
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({ Error: "Error occurred while creating message instance!" });
+    res.status(500).json({ Error: "Error occurred while generating report" });
   }
 };
 
 export const getProgressReport = async (req: Request, res: Response) => {
   const { userId, startDate, endDate } = req.params;
 
-  if (!userId || !startDate || endDate) {
+  if (!userId || !startDate || !endDate) {
     return res.status(400).json({ Error: "Missing parameter(s)!" });
   }
   try {
@@ -77,5 +84,15 @@ export const deleteProgressReport = async (req: Request, res: Response) => {
   const { reportId } = req.params;
   if (!reportId) {
     return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const result = await deleteUserProgressReport(reportId);
+    if (!result) {
+      return res.status(404).json({ Error: "Report not found" });
+    }
+    return res.status(200).json(result);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ Error: "Error while deleting report" });
   }
 };
