@@ -2,7 +2,7 @@ import { PoolClient } from "pg";
 import pool from "../db";
 import { v4 as uuidv4 } from "uuid";
 
-// Generate a new UUID
+// Generate a new unique identifier
 const uniqueId = uuidv4();
 console.log("Generated UUID:", uniqueId);
 
@@ -10,6 +10,7 @@ interface chat {
   id: string;
   chatName: string;
   isCommunity: boolean;
+  userId: string;
 }
 
 interface chatMembers {
@@ -21,6 +22,13 @@ interface chatMembers {
 export const createChatRoom = async (chat: chat) => {
   const client: PoolClient = await pool.connect();
   try {
+    const existingChat = await client.query(
+      "SELECT * FROM chats JOIN chatMembers cm ON chats.id = cm.chatId WHERE cm.userId = $1 and chat.isCommunity = $2 RETURNING *",
+      [chat.userId, chat.isCommunity]
+    );
+    if (existingChat) {
+      return "Chat already exists!";
+    }
     const { rows } = await client.query(
       `INSERT INTO chats (id, chatName, isCommunity) VALUES ($1, $2, $3) RETURNING *`,
       [chat.id, chat.chatName, chat.isCommunity]
@@ -37,7 +45,7 @@ export const getAllUserChats = async (userId: string) => {
   const client: PoolClient = await pool.connect();
   try {
     const { rows } = await client.query(
-      `SELECT c.chat_id, c.chat_name FROM chats c JOIN chat_members cm ON c.chat_id = cm.chat_id WHERE cm.user_id = $1 RETURNING *`,
+      `SELECT c.chatId, c.chatName FROM chats c JOIN chatMembers cm ON c.id = cm.chatId WHERE cm.userId = $1 RETURNING *`,
       [userId]
     );
     return rows[0];
@@ -52,12 +60,12 @@ export const getOneChat = async (senderId: string, receiverId: string) => {
   const client: PoolClient = await pool.connect();
   try {
     const { rows } = await client.query(
-      `SELECT cm1.chat_id
-FROM chat_members cm1
-JOIN chat_members cm2 ON cm1.chat_id = cm2.chat_id
-WHERE cm1.user_id = $1
-AND cm2.user_id = $2
-GROUP BY cm1.chat_id
+      `SELECT cm1.chatId
+FROM chatMembers cm1
+JOIN chatMembers cm2 ON cm1.chatId = cm2.chatId
+WHERE cm1.userId = $1
+AND cm2.userId = $2
+GROUP BY cm1.chatId
 HAVING COUNT(*) = 2 RETURNING *`,
       [senderId, receiverId]
     );

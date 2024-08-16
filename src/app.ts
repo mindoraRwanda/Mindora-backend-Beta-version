@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes";
 import adminRoutes from "./routes/adminRoutes";
+<<<<<<< HEAD
 import medicalProfileRoutes from './routes/medicalProfileRoutes';
 import messageRoutes from "./routes/messageRoutes";
 import emergencyContactsRoutes from "./routes/emegergencyContactsRoutes";
@@ -10,11 +11,20 @@ import groupMembershipRoutes from './routes/groupMembershipRoutes'; // Existing 
 import notificationRoutes from './routes/notificationRoutes'; // Existing routes
 import symptomLoggingRoutes from './routes/symptomLoggingRoutes'; // Existing routes
 import systemConfigurationRoutes from './routes/systemConfigurationRoutes'; 
+=======
+import medicalProfileRoutes from "./routes/medicalProfileRoutes";
+>>>>>>> 25359b0 (API: mood logging)
 import { connectDB } from "./db";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+<<<<<<< HEAD
 
+=======
+import messageRoutes from "./routes/messageRoutes";
+import emergencyContactsRoutes from "./routes/emegergencyContactsRoutes";
+import moodRoutes from "./routes/moodRoutes";
+>>>>>>> 25359b0 (API: mood logging)
 // import { sendMessage } from './controllers/messageController';
 
 dotenv.config();
@@ -28,12 +38,17 @@ app.use(bodyParser.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/messages", messageRoutes);
+<<<<<<< HEAD
 app.use('/api/appointments', appointmentRoutes); 
 app.use("/api/contacts", emergencyContactsRoutes); 
 app.use('/api/group-memberships', groupMembershipRoutes); 
 app.use('/api/notifications', notificationRoutes); // Existing routes
 app.use('/api/symptom-logs', symptomLoggingRoutes); // Existing routes
 app.use('/api/system-configurations', systemConfigurationRoutes); // Add new routes
+=======
+app.use("/api/contacts", emergencyContactsRoutes);
+app.use("/api/mood", moodRoutes);
+>>>>>>> 25359b0 (API: mood logging)
 
 let onlineUsers: Array<any> = [];
 
@@ -69,12 +84,12 @@ io.on("connection", (socket) => {
     io.emit("getOnlineUsers", onlineUsers);
   });
 });
-app.use('/api/medical-profile', medicalProfileRoutes);
+app.use("/api/medical-profile", medicalProfileRoutes);
 const startServer = async () => {
   await connectDB();
   server.listen(8080, () => {
     console.log("Server is running on port 8080 🚀");
-  })
+  });
 };
 
 startServer();

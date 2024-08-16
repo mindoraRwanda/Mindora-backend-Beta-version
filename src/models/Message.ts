@@ -1,20 +1,20 @@
 import { PoolClient } from "pg";
 import pool from "../db";
 
-interface message {
-  id: number;
-  senderId: number;
-  receiverId: number;
-  messageText: string;
-  sentAt: Date;
+interface Message {
+  id: string;
+  chatId: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
 }
 
-export const createMsg = async (msg: message) => {
+export const createMsg = async (msg: Message) => {
   const client: PoolClient = await pool.connect();
   try {
     const { rows } = await client.query(
-      `INSERT INTO messages (senderId, receiverId, messageText, sentAt) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [msg.senderId, msg.receiverId, msg.messageText, msg.sentAt]
+      `INSERT INTO messages (id, chatId, senderId, receiverId, text) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [msg.id, msg.chatId, msg.senderId, msg.receiverId, msg.text]
     );
     return rows[0];
   } catch (err) {
@@ -24,12 +24,12 @@ export const createMsg = async (msg: message) => {
   }
 };
 
-interface msgToUpdate {
-  id: number;
-  senderId: number;
+interface MsgToUpdate {
+  id: string;
+  senderId: string;
   newMessage: string;
 }
-export const updateMsg = async (msg: msgToUpdate): Promise<any> => {
+export const updateMsg = async (msg: MsgToUpdate): Promise<any> => {
   const client: PoolClient = await pool.connect();
   try {
     const { rows } = await client.query(
@@ -47,7 +47,8 @@ export const updateMsg = async (msg: msgToUpdate): Promise<any> => {
   }
 };
 
-export const deleteMsg = async (id: number): Promise<any> => {
+export const deleteMsg = async (id: string): Promise<any> => {
+  /// will need to add controll of who can and who cannot delete message
   const client: PoolClient = await pool.connect();
   try {
     const { rows } = await client.query(
@@ -65,12 +66,12 @@ export const deleteMsg = async (id: number): Promise<any> => {
   }
 };
 
-export const getMessages = async (userId: string): Promise<any> => {
+export const getMessages = async (chatId: string): Promise<any> => {
   const client: PoolClient = await pool.connect();
   try {
     const { rows } = await client.query(
-      `SELECT * FROM messages WHERE senderId = $1 RETURNING *`,
-      [userId]
+      `SELECT * FROM messages WHERE chatId = $1`,
+      [chatId]
     );
     if (rows.length === 0) {
       return null;
