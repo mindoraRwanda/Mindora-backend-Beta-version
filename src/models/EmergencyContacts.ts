@@ -71,3 +71,86 @@ export const getEmergencyContact = async (
     client.release();
   }
 };
+
+export const getHotline = async (): Promise<Hotline[]> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const hotlines = await client.query(`SELECT * FROM hotlines`);
+    return hotlines.rows;
+  } catch (err) {
+    console.error("Error retrieving contacts:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
+export const updateEmergencyContact = async (
+  contact: EmergencyContact
+): Promise<EmergencyContact | undefined> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `UPDATE emergencyContacts SET contactName = $1, contactInfo = $2 WHERE id = $3 RETURNING *`,
+      [contact.contactName, contact.contactInfo, contact.id]
+    );
+    return rows[0];
+  } catch (err) {
+    console.error("Error updating emergency contact:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
+export const updateHotline = async (
+  hotline: Hotline
+): Promise<Hotline | undefined> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `UPDATE hotlines SET contactName = $1, contactInfo = $2 WHERE id = $3 RETURNING *`,
+      [hotline.contactName, hotline.contactInfo, hotline.id]
+    );
+    return rows[0];
+  } catch (err) {
+    console.error("Error updating hotline:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteEmergencyContact = async (
+  id: string
+): Promise<EmergencyContact> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `DELETE FROM emergencyContacts WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    return rows[0];
+  } catch (err) {
+    console.error("Error deleting contacts:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteHotline = async (id: string): Promise<Hotline> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `DELETE FROM hotlines WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    return rows[0];
+  } catch (err) {
+    console.error("Error deleting hotline", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+};

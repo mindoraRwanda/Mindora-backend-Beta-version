@@ -1,14 +1,16 @@
-// src/routes/symptomLoggingRoutes.ts
+import express from "express";
+import {
+  addSymptoms,
+  getSymptoms,
+  updateSymptoms,
+  deleteSymptoms,
+} from "../controllers/symptomLoggingController";
 
-import { Router } from 'express';
-import { createSymptom, updateSymptom, deleteSymptom, getSymptom, getUserSymptoms } from '../controllers/symptomLoggingController';
+const router = express.Router();
 
-const router = Router();
-
-router.post('/', createSymptom);
-router.put('/', updateSymptom);
-router.delete('/', deleteSymptom);
-router.get('/', getSymptom);
-router.get('/user', getUserSymptoms);
+router.post("/add_symptom", addSymptoms);
+router.get("/get_symptoms/:userId", getSymptoms);
+router.post("/update_symptom/:id", updateSymptoms);
+router.post("/delete_symptom/:id", deleteSymptoms);
 
 export default router;

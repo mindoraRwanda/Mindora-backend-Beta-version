@@ -3,8 +3,14 @@ import {
   saveEmergencyContact,
   saveHotline,
   getEmergencyContact,
+  getHotline,
+  updateEmergencyContact,
+  updateHotline,
+  deleteEmergencyContact,
+  deleteHotline,
 } from "../models/EmergencyContacts";
 import { v4 as uuidv4 } from "uuid";
+import { constants } from "buffer";
 
 export const addEmergencyContact = async (req: Request, res: Response) => {
   const contactData = req.body;
@@ -76,5 +82,98 @@ export const getUserEmergencyContacts = async (req: Request, res: Response) => {
     return res
       .status(500)
       .json({ Error: "Error while retrieving emergency contacts for user!" });
+  }
+};
+
+export const getHotlines = async (req: Request, res: Response) => {
+  try {
+    const hotlines = await getHotline();
+    if (!hotlines) {
+      return res.status(404).json({ Error: "hotline contacts not found!" });
+    }
+    return res.status(200).json(hotlines);
+  } catch (err) {
+    console.error("Error while retrieving hotlines", err);
+    return res.status(500).json({ Error: "Error while retrieving hotlines" });
+  }
+};
+
+export const updateUserEmergencyContact = async (
+  req: Request,
+  res: Response
+) => {
+  const updatedData = req.body;
+  if (!updatedData) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const updatedRow = await updateEmergencyContact({ ...updatedData });
+    if (!updatedRow) {
+      return res.status(404).json({ Error: "Emergency contact not found!" });
+    }
+    return res.status(200).json(updatedRow);
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ Error: "Error while updating the emergency contact" });
+  }
+};
+
+export const updateHotlineContact = async (req: Request, res: Response) => {
+  const updatedData = req.body;
+  if (!updatedData) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const updatedRow = await updateHotline({ ...updatedData });
+    if (!updatedRow) {
+      return res.status(404).json({ Error: "Hotline contact not found!" });
+    }
+    return res.status(200).json(updatedRow);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ Error: "Error while updating hotline" });
+  }
+};
+
+export const deleteUserEmergencyContact = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const deletedRow = await deleteEmergencyContact(id);
+    if (!deletedRow) {
+      return res.status(404).json({ Error: "Emergency contact not found!" });
+    }
+    return res.status(200).json(deletedRow);
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ Error: "Error while deleting emergency contact" });
+  }
+};
+
+export const deleteHotlineContact = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const deletedRow = await deleteHotline(id);
+    if (!deletedRow) {
+      return res.status(404).json({ Error: "Hotline contact not found!" });
+    }
+    return res.status(200).json(deletedRow);
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ Error: "Error while deleting hotline contact" });
   }
 };

@@ -1,102 +1,94 @@
-// src/models/SymptomLogging.ts
+import { PoolClient } from "pg";
+import pool from "../db";
 
-import { PoolClient } from 'pg';
-import pool from '../db'; // Ensure this is the correct path to your pool instance
-
-interface SymptomLogging {
-  userId: number;
-  symptom: string;
-  severity: number;
-  loggedAt?: Date;
+enum Severity {
+  Mild = "Mild",
+  Moderate = "Moderate",
+  Severe = "Severe",
 }
 
-// Create a new symptom logging entry
-export const createSymptomLogging = async (entry: SymptomLogging) => {
+enum Frequency {
+  Daily = "Daily",
+  Weekly = "Weekly",
+  Monthly = "Monthly",
+}
+
+interface Symptom {
+  id: string;
+  userId: string;
+  symptom: string;
+  severity: Severity; // Enforces the use of Severity enum values
+  frequency: Frequency; // Enforces the use of Frequency enum values
+  onset: Date;
+  description: string;
+}
+
+export const addUserSymptoms = async (
+  symptom: Symptom
+): Promise<Symptom | undefined> => {
   const client: PoolClient = await pool.connect();
   try {
-    const result = await client.query(
-      `INSERT INTO symptom_logging (userId, symptom, severity, loggedAt)
-       VALUES ($1, $2, $3, $4) RETURNING *`,
-      [entry.userId, entry.symptom, entry.severity, entry.loggedAt || new Date()]
+    const { rows } = await client.query(
+      `INSERT INTO symptoms (id, userId, symptom, severity, frequency, onset, description) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [
+        symptom.id,
+        symptom.userId,
+        symptom.symptom,
+        symptom.severity,
+        symptom.frequency,
+        symptom.onset,
+        symptom.description,
+      ]
     );
-    return result.rows[0];
-  } catch (err) {
-    console.error('Error creating symptom logging entry:', err);
-    throw err;
+    return rows[0];
   } finally {
     client.release();
   }
 };
 
-// Update an existing symptom logging entry
-export const updateSymptomLogging = async (id: number, updatedEntry: Partial<SymptomLogging>) => {
+export const getUserSymptoms = async (userId: string): Promise<Symptom[]> => {
   const client: PoolClient = await pool.connect();
   try {
-    const result = await client.query(
-      `UPDATE symptom_logging
-       SET symptom = COALESCE($1, symptom),
-           severity = COALESCE($2, severity),
-           loggedAt = COALESCE($3, loggedAt)
-       WHERE id = $4 RETURNING *`,
-      [updatedEntry.symptom, updatedEntry.severity, updatedEntry.loggedAt, id]
-    );
-    if (result.rows.length === 0) return null;
-    return result.rows[0];
-  } catch (err) {
-    console.error('Error updating symptom logging entry:', err);
-    throw err;
-  } finally {
-    client.release();
-  }
-};
-
-// Delete a symptom logging entry
-export const deleteSymptomLogging = async (id: number) => {
-  const client: PoolClient = await pool.connect();
-  try {
-    const result = await client.query(
-      `DELETE FROM symptom_logging WHERE id = $1 RETURNING *`,
-      [id]
-    );
-    if (result.rows.length === 0) return null;
-    return result.rows[0];
-  } catch (err) {
-    console.error('Error deleting symptom logging entry:', err);
-    throw err;
-  } finally {
-    client.release();
-  }
-};
-
-// Get a symptom logging entry by ID
-export const getSymptomLogging = async (id: number) => {
-  const client: PoolClient = await pool.connect();
-  try {
-    const result = await client.query(
-      `SELECT * FROM symptom_logging WHERE id = $1`,
-      [id]
-    );
-    return result.rows[0];
-  } catch (err) {
-    console.error('Error retrieving symptom logging entry:', err);
-    throw err;
-  } finally {
-    client.release();
-  }
-};
-
-// Get all symptom logging entries for a user
-export const getUserSymptomLoggings = async (userId: number) => {
-  const client: PoolClient = await pool.connect();
-  try {
-    const result = await client.query(
-      `SELECT * FROM symptom_logging WHERE userId = $1`,
+    const { rows } = await client.query(
+      `SELECT * FROM symptoms WHERE symptoms.userId = $1`,
       [userId]
     );
-    return result.rows;
-  } catch (err) {
-    console.error('Error retrieving symptom logging entries for user:', err);
-    throw err;
+    return rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+export const updateUserSymptoms = async (
+  symptom: Symptom
+): Promise<Symptom | undefined> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `UPDATE symptoms SET symptom = $1, severity = $2, frequency = $3, onset = $4, description = $5 WHERE id = $6 RETURNING *`,
+      [
+        symptom.symptom,
+        symptom.severity,
+        symptom.frequency,
+        symptom.onset,
+        symptom.description,
+        symptom.id,
+      ]
+    );
+    return rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteUserSymptoms = async (id: string): Promise<Symptom[]> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      `DELETE FROM symptoms WHERE symptoms.id = $1 RETURNING *`,
+      [id]
+    );
+    return rows[0];
   } finally {
     client.release();
   }

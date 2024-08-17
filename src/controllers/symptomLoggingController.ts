@@ -1,93 +1,99 @@
-// src/controllers/symptomLoggingController.ts
+import { Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
+import {
+  addUserSymptoms,
+  getUserSymptoms,
+  updateUserSymptoms,
+  deleteUserSymptoms,
+} from "../models/SymptomLogging";
 
-import { Request, Response } from 'express';
-import { createSymptomLogging, updateSymptomLogging, deleteSymptomLogging, getSymptomLogging, getUserSymptomLoggings } from '../models/SymptomLogging';
-
-export const createSymptom = async (req: Request, res: Response) => {
-  const entry = req.body;
-
-  if (!entry.userId || !entry.symptom || entry.severity === undefined) {
-    return res.status(400).json({ error: "Missing parameter(s)!" });
+export const addSymptoms = async (req: Request, res: Response) => {
+  const symptomData = req.body;
+  console.log(symptomData);
+  if (!symptomData) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
   }
 
+  // Generate a new UUID
+  const uniqueId = uuidv4();
   try {
-    const newEntry = await createSymptomLogging(entry);
-    res.status(201).json(newEntry);
-  } catch (err) {
-    console.error('Error creating symptom logging entry:', err);
-    res.status(500).json({ error: "Error occurred while creating symptom logging entry!" });
-  }
-};
-
-export const updateSymptom = async (req: Request, res: Response) => {
-  const { id, ...updatedEntry } = req.body;
-
-  if (!id) {
-    return res.status(400).json({ error: "Missing parameter(s)!" });
-  }
-
-  try {
-    const updated = await updateSymptomLogging(id, updatedEntry);
-    if (!updated) {
-      return res.status(404).json({ error: "Symptom logging entry not found or not updated." });
+    const updatedSymptom = await addUserSymptoms({
+      ...symptomData,
+      id: uniqueId,
+    });
+    if (!updatedSymptom) {
+      return res
+        .status(500)
+        .json({ Error: "Failed to save the symptom in db" });
     }
-    res.status(200).json(updated);
+
+    return res.status(201).json(updatedSymptom);
   } catch (err) {
-    console.error('Error updating symptom logging entry:', err);
-    res.status(500).json({ error: "Error occurred while updating symptom logging entry!" });
+    console.error("Error while saving symptom:", err);
+    return res.status(500).json({ Error: "Error while saving symtom!" });
   }
 };
 
-export const deleteSymptom = async (req: Request, res: Response) => {
-  const { id } = req.body;
-
-  if (!id) {
-    return res.status(400).json({ error: "Missing parameter(s)!" });
-  }
-
-  try {
-    const deleted = await deleteSymptomLogging(id);
-    if (!deleted) {
-      return res.status(404).json({ error: "Symptom logging entry not found or not deleted." });
-    }
-    res.status(200).json(deleted);
-  } catch (err) {
-    console.error('Error deleting symptom logging entry:', err);
-    res.status(500).json({ error: "Error occurred while deleting symptom logging entry!" });
-  }
-};
-
-export const getSymptom = async (req: Request, res: Response) => {
-  const { id } = req.query;
-
-  if (!id) {
-    return res.status(400).json({ error: "Missing parameter(s)!" });
-  }
-
-  try {
-    const entry = await getSymptomLogging(Number(id));
-    if (!entry) {
-      return res.status(404).json({ error: "Symptom logging entry not found." });
-    }
-    res.status(200).json(entry);
-  } catch (err) {
-    console.error('Error retrieving symptom logging entry:', err);
-    res.status(500).json({ error: "Error while retrieving symptom logging entry!" });
-  }
-};
-
-export const getUserSymptoms = async (req: Request, res: Response) => {
-  const { userId } = req.query;
+export const getSymptoms = async (req: Request, res: Response) => {
+  const { userId } = req.params;
 
   if (!userId) {
-    return res.status(400).json({ error: "Missing parameter(s)!" });
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const symptoms = await getUserSymptoms(userId);
+    if (!symptoms || symptoms.length === 0) {
+      return res.status(404).json({ Error: "User symptoms not found!" });
+    }
+    return res.status(200).json(symptoms);
+  } catch (err) {
+    console.error("Error while retrieving symptoms:", err);
+    return res
+      .status(500)
+      .json({ Error: "Error while retrieving symptoms for user!" });
+  }
+};
+
+export const updateSymptoms = async (req: Request, res: Response) => {
+  const symptomData = req.body;
+  console.log(symptomData);
+  if (!symptomData) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
   }
 
   try {
-    const entries = await getUserSymptomLoggings(Number(userId));
-    res.status(200).json(entries);
+    const updatedSymptom = await updateUserSymptoms({
+      ...symptomData,
+    });
+    if (!updatedSymptom) {
+      return res
+        .status(500)
+        .json({ Error: "Failed to update the symptom in db" });
+    }
+
+    return res.status(201).json(updatedSymptom);
   } catch (err) {
-    console.error('Error retrieving symptom logging entries for user:', err);
-    res.status(500).json({ error: "Error while retrieving symptom logging entries!" });
+    console.error("Error while updating symptom:", err);
+    return res.status(500).json({ Error: "Error while updating symtom!" });
+  }
+};
+
+export const deleteSymptoms = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ Error: "Missing parameter(s)!" });
+  }
+  try {
+    const symptoms = await deleteUserSymptoms(id);
+    if (!symptoms || symptoms.length === 0) {
+      return res.status(404).json({ Error: "User symptoms not found!" });
+    }
+    return res.status(200).json(symptoms);
+  } catch (err) {
+    console.error("Error while deleting symptoms:", err);
+    return res
+      .status(500)
+      .json({ Error: "Error while deleting symptoms for user!" });
   }
 };
