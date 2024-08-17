@@ -60,3 +60,22 @@ export const getNormalUserByEmail = async (email: string): Promise<NormalUser | 
   }
 };
 
+export const updateUserByEmail = async (email: string,user:NormalUser): Promise<NormalUser | undefined> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    const { rows } = await client.query(`UPDATE normal_users SET name = $1, username = $2, phone_number = $3 WHERE email = $4 RETURNING *`, 
+      [user.name, user.username, user.phone_number, email]);
+    return rows[0] as NormalUser | undefined;
+  } finally {
+    client.release();
+  }
+}
+
+export const deleteUserByEmail = async (email: string): Promise<void> => {
+  const client: PoolClient = await pool.connect();
+  try {
+    await client.query(`DELETE FROM normal_users WHERE email = $1`, [email]);
+  } finally {
+    client.release();
+  }
+}
