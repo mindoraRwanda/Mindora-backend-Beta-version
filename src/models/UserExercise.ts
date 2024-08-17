@@ -3,7 +3,7 @@ import pool from "../db";
 
 enum Status {
   Started = "Started",
-  Completed = "Complted",
+  Completed = "Completed",
 }
 // Tracks user progress on exercises
 interface UserExercise {

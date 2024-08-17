@@ -8,13 +8,16 @@ import {
 } from "../models/Exercise";
 
 export const addExercise = async (req: Request, res: Response) => {
-  const data = req.body;
-  if (!data) {
+  const { title, description, difficultyLevel, category } = req.body;
+  if (!title || !description || !difficultyLevel || !category) {
     return res.status(400).json({ Error: "Missing parameter(s)!" });
   }
   try {
     const unniqueId = uuidv4();
-    const InsertedExercise = await createExercise({ ...data, id: unniqueId });
+    const InsertedExercise = await createExercise({
+      ...{ title, description, difficultyLevel, category },
+      id: unniqueId,
+    });
     if (!InsertedExercise) {
       return res.status(500).json({ Error: "Error while adding an exercise!" });
     }
@@ -26,12 +29,18 @@ export const addExercise = async (req: Request, res: Response) => {
 };
 
 export const updateExercise = async (req: Request, res: Response) => {
-  const data = req.body;
-  if (!data) {
+  const { id, title, description, difficultyLevel, category } = req.body;
+  if (!id || !title || !description || !difficultyLevel || !category) {
     return res.status(400).json({ Error: "Missing parameter(s)!" });
   }
   try {
-    const updatedExercise = await updateTargetExercise({ ...data });
+    const updatedExercise = await updateTargetExercise({
+      id,
+      title,
+      description,
+      difficultyLevel,
+      category,
+    });
     if (!updatedExercise) {
       return res.status(500).json({ Error: "Exercise to update not found!" });
     }

@@ -16,6 +16,7 @@ import dotenv from "dotenv";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import moodRoutes from "./routes/moodRoutes";
+import exerciseRoutes from "./routes/exercisesRoutes";
 // import { sendMessage } from './controllers/messageController';
 
 dotenv.config();
@@ -37,6 +38,7 @@ app.use("/api/symptom-logs", symptomLoggingRoutes); // Existing routes
 app.use("/api/system-configurations", systemConfigurationRoutes); // Add new routes
 app.use("/api/mood", moodRoutes);
 app.use("/api/report", progressReportRoutes);
+app.use("/api/exercises", exerciseRoutes);
 
 let onlineUsers: Array<any> = [];
 
