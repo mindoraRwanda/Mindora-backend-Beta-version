@@ -5,7 +5,9 @@ import dotenv from "dotenv";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import userRoutes from "./routes/routes";
-
+import patientRoutes from "./routes/patientRoutes";
+import User from "./database/models/user";
+import Patient from "./database/models/patient";
 // import { sendMessage } from './controllers/messageController';
 
 dotenv.config();
@@ -17,6 +19,7 @@ const io = new Server(server);
 
 app.use(bodyParser.json());
 app.use("/api", userRoutes);
+app.use("/api", patientRoutes);
 // tests socket connection
 // io.on("connection", (socket) => {
 console.log("a user connected");
@@ -49,12 +52,28 @@ console.log("a user connected");
 //     io.emit("getOnlineUsers", onlineUsers);
 //   });
 // });
+
+User.hasOne(Patient, {
+  foreignKey: "userId",
+  as: "patient",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+Patient.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
 const startServer = async () => {
   sequelize.authenticate().then(() => {
     console.log(
       "Connection to the database has been established successfully."
     );
   });
+  // await sequelize.sync({ alter: true });
   server.listen(8080, () => {
     console.log("Server is running on port 8080 🚀");
   });

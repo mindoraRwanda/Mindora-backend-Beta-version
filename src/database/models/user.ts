@@ -1,5 +1,6 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelize from "../../db";
+import Patient from "./patient";
 
 // Define the attributes for the User model
 export interface UserAttributes {
