@@ -1,7 +1,8 @@
-### MINDORA BACKEND APP:
-# Running migrations: 
+# MINDORA BACKEND APP:
+
+#### Running migrations: 
 `npm run migrate`
-# Undoing migrations: 
+#### Undoing migrations: 
 `npm run down`
-# Creating migrations: 
+#### Creating migrations: 
 `npx sequelize-cli migration:generate --name migration name`
