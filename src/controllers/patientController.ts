@@ -29,6 +29,7 @@ export const createPatient = async (
 
     res.status(201).json(newPatient);
   } catch (error) {
+    // pass error to errorHandler middleware
     next(error);
   }
 };
@@ -41,10 +42,15 @@ export const getPatientById = async (
 ) => {
   try {
     const { id } = req.params;
-    if (id) {
+    if (!id) {
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    const patient = await Patient.findByPk(id);
+    const patient = await Patient.findByPk(id, {
+      include: {
+        model: User,
+        as: "user",
+      },
+    });
 
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
@@ -52,6 +58,7 @@ export const getPatientById = async (
 
     res.status(200).json(patient);
   } catch (error) {
+    // pass error to errorHandler middleware
     next(error);
   }
 };
@@ -64,28 +71,21 @@ export const updatePatient = async (
 ) => {
   try {
     const { id } = req.params;
-    if (id) {
+    const data = req.body;
+    if (!id || !data) {
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    const { userId, medicalProfile, personalInformation, emergencyContact } =
-      req.body;
 
     const patient = await Patient.findByPk(id);
 
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
-
-    patient.userId = userId || patient.userId;
-    patient.medicalProfile = medicalProfile || patient.medicalProfile;
-    patient.personalInformation =
-      personalInformation || patient.personalInformation;
-    patient.emergencyContact = emergencyContact || patient.emergencyContact;
-
-    await patient.save();
+    patient.update(data);
 
     res.status(200).json(patient);
   } catch (error) {
+    // pass error to errorHandler middleware
     next(error);
   }
 };
@@ -98,7 +98,7 @@ export const deletePatient = async (
 ) => {
   try {
     const { id } = req.params;
-    if (id) {
+    if (!id) {
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
@@ -112,6 +112,7 @@ export const deletePatient = async (
 
     res.status(204).json();
   } catch (error) {
+    // pass error to errorHandler middleware
     next(error);
   }
 };
@@ -123,12 +124,15 @@ export const getAllPatients = async (
   next: NextFunction
 ) => {
   try {
-    const patients = await Patient.findAll({ include: User });
+    const patients = await Patient.findAll({
+      include: { model: User, as: "user" },
+    });
     if (!patients) {
       return res.status(404).json({ message: "Patients not found" });
     }
     res.status(200).json(patients);
   } catch (error) {
+    // pass error to errorHandler middleware
     next(error);
   }
 };

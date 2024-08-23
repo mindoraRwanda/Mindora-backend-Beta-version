@@ -2,6 +2,7 @@ import { error } from "console";
 import User, { UserAttributes } from "../database/models/user";
 import { Request, Response, NextFunction } from "express";
 import Patient from "../database/models/patient";
+import Therapist from "../database/models/therapist";
 
 // Create a new user
 export const createUser = async (
@@ -29,7 +30,10 @@ export const getAllUsers = async (
 ) => {
   try {
     const users = await User.findAll({
-      include: { model: Patient, as: "patient" },
+      include: [
+        { model: Patient, as: "patient" },
+        { model: Therapist, as: "therapist" },
+      ],
     });
     if (!users) {
       res.status(404).json({ message: "users not found!" });
@@ -52,7 +56,12 @@ export const getUserById = async (
     if (!id) {
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(id, {
+      include: [
+        { model: Patient, as: "patient" },
+        { model: Therapist, as: "therapist" },
+      ],
+    });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -71,14 +80,15 @@ export const updateUser = async (
 ) => {
   try {
     const { id } = req.params;
-    if (!id) {
+    const data = req.body;
+    if (!id || !data) {
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    await user.update(req.body);
+    await user.update(data);
     res.status(200).json(user);
   } catch (error) {
     // pass error to errorHandler middleware
@@ -97,7 +107,7 @@ export const deleteUser = async (
     if (!id) {
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

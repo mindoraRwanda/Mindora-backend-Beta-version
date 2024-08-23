@@ -9,6 +9,7 @@ import userRoutes from "./routes/routes";
 import patientRoutes from "./routes/patientRoutes";
 import { modelAssociation } from "./database/models/association";
 import authRoutes from "./routes/auth.routes";
+import therapistRoutes from "./routes/therapistRoutes";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use("/api", userRoutes);
 app.use("/api", patientRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", therapistRoutes);
 
 // this should the last one
 app.use(errorHandler);
