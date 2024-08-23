@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from "sequelize";
+import bcrypt from "bcryptjs";
 import sequelize from "../../db";
-import Patient from "./patient";
 
 // Define the attributes for the User model
 export interface UserAttributes {
@@ -40,6 +40,11 @@ class User
   // Timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  // Instance method to compare passwords
+  public async validatePassword(password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password);
+  }
 }
 
 // Initialize the User model
@@ -94,6 +99,20 @@ User.init(
     sequelize,
     tableName: "users",
     timestamps: true,
+    hooks: {
+      beforeCreate: async (user: User) => {
+        if (user.password) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+      beforeUpdate: async (user: User) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
   }
 );
 

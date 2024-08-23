@@ -4,11 +4,11 @@ import sequelize from "./db";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import { errorHandler } from "./middleware/error.middleware";
 import userRoutes from "./routes/routes";
 import patientRoutes from "./routes/patientRoutes";
-import User from "./database/models/user";
-import Patient from "./database/models/patient";
-// import { sendMessage } from './controllers/messageController';
+import { modelAssociation } from "./database/models/association";
+import authRoutes from "./routes/auth.routes";
 
 dotenv.config();
 
@@ -20,6 +20,10 @@ const io = new Server(server);
 app.use(bodyParser.json());
 app.use("/api", userRoutes);
 app.use("/api", patientRoutes);
+app.use("/api/auth", authRoutes);
+
+// this should the last one
+app.use(errorHandler);
 // tests socket connection
 // io.on("connection", (socket) => {
 console.log("a user connected");
@@ -53,26 +57,13 @@ console.log("a user connected");
 //   });
 // });
 
-User.hasOne(Patient, {
-  foreignKey: "userId",
-  as: "patient",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
-Patient.belongsTo(User, {
-  foreignKey: "userId",
-  as: "user",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
 const startServer = async () => {
   sequelize.authenticate().then(() => {
     console.log(
       "Connection to the database has been established successfully."
     );
   });
+  await modelAssociation();
   // await sequelize.sync({ alter: true });
   server.listen(8080, () => {
     console.log("Server is running on port 8080 🚀");

@@ -1,9 +1,14 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import Patient from "../database/models/patient";
+import User from "../database/models/user";
 import { error } from "console";
 
 // Create a new Patient
-export const createPatient = async (req: Request, res: Response) => {
+export const createPatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { userId, medicalProfile, personalInformation, emergencyContact } =
       req.body;
@@ -13,7 +18,7 @@ export const createPatient = async (req: Request, res: Response) => {
       !personalInformation ||
       !emergencyContact
     ) {
-      res.status(400).json({ error: "Missing parameter(s)!" });
+      res.status(400).json({ message: "Missing parameter(s)!" });
     }
     const newPatient = await Patient.create({
       userId,
@@ -24,35 +29,43 @@ export const createPatient = async (req: Request, res: Response) => {
 
     res.status(201).json(newPatient);
   } catch (error) {
-    res.status(500).json({ error: "Failed to create patient" });
+    next(error);
   }
 };
 
 // Get a specific Patient by ID
-export const getPatientById = async (req: Request, res: Response) => {
+export const getPatientById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     if (id) {
-      res.status(400).json({ error: "Missing parameter(s)!" });
+      res.status(400).json({ message: "Missing parameter(s)!" });
     }
     const patient = await Patient.findByPk(id);
 
     if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
+      return res.status(404).json({ message: "Patient not found" });
     }
 
     res.status(200).json(patient);
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve patient" });
+    next(error);
   }
 };
 
 // Update a Patient
-export const updatePatient = async (req: Request, res: Response) => {
+export const updatePatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     if (id) {
-      res.status(400).json({ error: "Missing parameter(s)!" });
+      res.status(400).json({ message: "Missing parameter(s)!" });
     }
     const { userId, medicalProfile, personalInformation, emergencyContact } =
       req.body;
@@ -60,7 +73,7 @@ export const updatePatient = async (req: Request, res: Response) => {
     const patient = await Patient.findByPk(id);
 
     if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
+      return res.status(404).json({ message: "Patient not found" });
     }
 
     patient.userId = userId || patient.userId;
@@ -73,41 +86,49 @@ export const updatePatient = async (req: Request, res: Response) => {
 
     res.status(200).json(patient);
   } catch (error) {
-    res.status(500).json({ error: "Failed to update patient" });
+    next(error);
   }
 };
 
 // Delete a Patient
-export const deletePatient = async (req: Request, res: Response) => {
+export const deletePatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     if (id) {
-      res.status(400).json({ error: "Missing parameter(s)!" });
+      res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
     const patient = await Patient.findByPk(id);
 
     if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
+      return res.status(404).json({ message: "Patient not found" });
     }
 
     await patient.destroy();
 
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete patient" });
+    next(error);
   }
 };
 
 // Get all Patients
-export const getAllPatients = async (req: Request, res: Response) => {
+export const getAllPatients = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const patients = await Patient.findAll();
+    const patients = await Patient.findAll({ include: User });
     if (!patients) {
-      return res.status(404).json({ error: "Patients not found" });
+      return res.status(404).json({ message: "Patients not found" });
     }
     res.status(200).json(patients);
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve patients" });
+    next(error);
   }
 };
