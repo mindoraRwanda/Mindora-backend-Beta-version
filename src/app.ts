@@ -10,6 +10,9 @@ import patientRoutes from "./routes/patientRoutes";
 import { modelAssociation } from "./database/models/association";
 import authRoutes from "./routes/auth.routes";
 import therapistRoutes from "./routes/therapistRoutes";
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './utils/swagger';
+import adminRoutes from "./routes/admin.routes";
 
 dotenv.config();
 
@@ -19,10 +22,12 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.use(bodyParser.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", userRoutes);
 app.use("/api", patientRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", therapistRoutes);
+app.use('/admin',adminRoutes)
 
 // this should the last one
 app.use(errorHandler);

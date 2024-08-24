@@ -1,5 +1,6 @@
 // src/@types/express/index.d.ts
 
+import User from "../../database/models/user";
 import { UserAttributes } from "../../models/user";
 
 declare global {
