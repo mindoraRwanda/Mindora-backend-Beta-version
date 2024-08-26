@@ -5,6 +5,8 @@ import fs from 'fs';
 // Define the absolute path for the uploads directory
 const uploadPath = path.join(__dirname, '..', 'uploads');
 
+
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Check if the uploads directory exists, if not, create it

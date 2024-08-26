@@ -5,22 +5,20 @@ import adminRoutes from "./routes/adminRoutes";
 import medicalProfileRoutes from './routes/medicalProfileRoutes';
 import messageRoutes from "./routes/messageRoutes";
 import emergencyContactsRoutes from "./routes/emegergencyContactsRoutes";
-import appointmentRoutes from './routes/appointmentRoutes'; // Existing routes
-import groupMembershipRoutes from './routes/groupMembershipRoutes'; // Existing routes
-import notificationRoutes from './routes/notificationRoutes'; // Existing routes
-import symptomLoggingRoutes from './routes/symptomLoggingRoutes'; // Existing routes
+import appointmentRoutes from './routes/appointmentRoutes'; 
+import groupMembershipRoutes from './routes/groupMembershipRoutes'; 
+import notificationRoutes from './routes/notificationRoutes'; 
+import symptomLoggingRoutes from './routes/symptomLoggingRoutes'; 
 import systemConfigurationRoutes from './routes/systemConfigurationRoutes'; 
 import { connectDB } from "./db";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 
-// import { sendMessage } from './controllers/messageController';
 
 dotenv.config();
 
 const app = express();
-// integrates socket server
 const server = createServer(app);
 const io = new Server(server);
 
@@ -31,9 +29,9 @@ app.use("/api/messages", messageRoutes);
 app.use('/api/appointments', appointmentRoutes); 
 app.use("/api/contacts", emergencyContactsRoutes); 
 app.use('/api/group-memberships', groupMembershipRoutes); 
-app.use('/api/notifications', notificationRoutes); // Existing routes
-app.use('/api/symptom-logs', symptomLoggingRoutes); // Existing routes
-app.use('/api/system-configurations', systemConfigurationRoutes); // Add new routes
+app.use('/api/notifications', notificationRoutes); 
+app.use('/api/symptom-logs', symptomLoggingRoutes);
+app.use('/api/system-configurations', systemConfigurationRoutes); 
 
 let onlineUsers: Array<any> = [];
 

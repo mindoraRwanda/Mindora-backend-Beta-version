@@ -10,6 +10,12 @@ import fs from 'fs';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
+interface MulterRequest extends Request {
+  files: {
+    [fieldname: string]: File[]
+  } | undefined
+}  
+
 const generateToken = (id: string, role: string) => {
   return jwt.sign({ userId: id, role }, JWT_SECRET, { expiresIn: '1h' });
 };
@@ -25,17 +31,59 @@ export const adminSignUp = async (req: Request, res: Response) => {
   }
 };
 
-export const therapistSignUp = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const therapistSignUp = async (req: MulterRequest, res: Response) => {
+  const { 
+    email, 
+    password, 
+    firstName, 
+    lastName, 
+    phoneNumber, 
+    specialization, 
+    experience, 
+    licenseNumber, 
+    bio 
+  } = req.body;
+
+  const files = req.files;
+
+  if (!files) {
+    return res.status(400).json({ error: 'No files were uploaded' });
+  }
+
+  const diplomaFile = files['diploma']?.[0];
+  const licenseFile = files['license']?.[0];
+  const profilePicture = files['profilePicture']?.[0];
+
+  if (!diplomaFile || !licenseFile || !profilePicture) {
+    return res.status(400).json({ error: 'Diploma, license, and profile picture are required' });
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const therapist = await createTherapist({ id: uuidv4(), email, password: hashedPassword, approved: false });
+
+    const therapist = await createTherapist({
+      id: uuidv4(),
+      email,
+      password: hashedPassword,
+      approved: false,
+      firstName,
+      lastName,
+      phoneNumber,
+      specialization,
+      experience: Number(experience),
+      licenseNumber,
+      diplomaUrl: '',
+      licenseUrl: '',
+      profilePictureUrl: '',
+      bio
+    }, diplomaFile.buffer, licenseFile.buffer, profilePicture.buffer);
+
     res.status(201).json(therapist);
   } catch (error) {
+    console.error('Error during therapist signup:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 export const normalUserSignUp = async (req: Request, res: Response) => {
   const { email, password, name, username, phone_number } = req.body;
   const profile_picture = req.file?.path;
@@ -73,7 +121,6 @@ export const normalUserSignUp = async (req: Request, res: Response) => {
   }
 };
 
-
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
@@ -101,6 +148,5 @@ export const login = async (req: Request, res: Response) => {
     res.status(200).json({ token, profile: user });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
-    
   }
 };

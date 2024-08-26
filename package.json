@@ -13,9 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "box-node-sdk": "^3.7.1",
     "cloudinary": "^2.4.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "file-type": "^19.4.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
