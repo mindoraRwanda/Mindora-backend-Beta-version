@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 import User from "../database/models/user";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { error } from "console";
+
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ export const register = async (
 
     const newUser = await User.create({ firstName, lastName, email, password });
     const token = jwt.sign(
-      { id: newUser.id },
+      { id: newUser.id ,role: newUser.role},
       process.env.JWT_SECRET as string,
       { expiresIn: "1h" }
     );
@@ -54,10 +54,10 @@ export const login = async (
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
+    const token = jwt.sign({ id: user.id, role:user.role }, process.env.JWT_SECRET as string, {
       expiresIn: "1h",
     });
-
+    // localStorage.setItem('token', token);
     res.status(200).json({ token });
   } catch (error) {
     next(error);

@@ -1,6 +1,7 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import bcrypt from "bcryptjs";
 import sequelize from "../../db";
+import Therapist from "./therapist";
 
 // Define the attributes for the User model
 export interface UserAttributes {
@@ -90,8 +91,8 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.STRING,
-      defaultValue: "user",
+      type: DataTypes.ENUM('patient','therapist','admin'),
+      defaultValue: "patient",
       allowNull: true,
     },
   },
