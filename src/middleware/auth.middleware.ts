@@ -65,7 +65,7 @@ export const isAuthenticated = async (req: CustomRequest, res: Response,next:Nex
 
 // Middleware to check permissions
 export const checkPermission = (permissionRole: string) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     const userInfo = req.user;
     if (userInfo) {
       const existingUser = await getUserByID(userInfo.id);
