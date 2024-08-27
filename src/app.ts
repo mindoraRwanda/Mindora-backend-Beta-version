@@ -10,9 +10,29 @@ import patientRoutes from "./routes/patientRoutes";
 import { modelAssociation } from "./database/models/association";
 import authRoutes from "./routes/auth.routes";
 import therapistRoutes from "./routes/therapistRoutes";
+<<<<<<< HEAD
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './utils/swagger';
 import adminRoutes from "./routes/admin.routes";
+=======
+import appointmentRoutes from "./routes/appointmentRoutes";
+import appointmentSlotsRoutes from "./routes/appointmentSlotsRoutes";
+import appointmentChangeRoutes from "./routes/appointmentChangeRoutes";
+import treatmentPlanRoutes from "./routes/treatmentPlanRoutes";
+import treatmentAdjustmentRoutes from "./routes/treatmentPlanAdjustmentRoutes";
+import treatmentGoalRoutes from "./routes/treatmentGoalRoutes";
+import treatmentMilestonesRoutes from "./routes/treatmentMilestonesRoutes";
+import milestoneTasksRoutes from "./routes/milestoneTaskRoutes";
+import electronicHealthRecordsRoutes from "./routes/electronicHealthRecordRoutes";
+import EHRFutureIntegrationRoutes from "./routes/EHRFutureIntegrationRoutes";
+import chatRoutes from "./routes/chatRoutes";
+import chatMembersRoutes from "./routes/chatMembersRoutes";
+import messagesRoutes from "./routes/messagesRoutes";
+import medicationRoutes from "./routes/medicationRoutes";
+import medicationPrescriptionRoutes from "./routes/medicationPrescriptionRoutes";
+import prescriptionComplianceRoutes from "./routes/prescriptionComplianceRoutes";
+import medicationRecommendationRoutes from "./routes/medicationRecommendationRoutes";
+>>>>>>> b63c278 (API: chats, medication, treatment plan and appointment)
 
 dotenv.config();
 
@@ -27,7 +47,27 @@ app.use("/api", userRoutes);
 app.use("/api", patientRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", therapistRoutes);
+<<<<<<< HEAD
 app.use('/admin',adminRoutes)
+=======
+app.use("/api", appointmentRoutes);
+app.use("/api", appointmentSlotsRoutes);
+app.use("/api", appointmentChangeRoutes);
+app.use("/api", treatmentPlanRoutes);
+app.use("/api", treatmentAdjustmentRoutes);
+app.use("/api", treatmentGoalRoutes);
+app.use("/api", treatmentMilestonesRoutes);
+app.use("/api", milestoneTasksRoutes);
+app.use("/api", electronicHealthRecordsRoutes);
+app.use("/api", EHRFutureIntegrationRoutes);
+app.use("/api", chatRoutes);
+app.use("/api", chatMembersRoutes);
+app.use("/api", messagesRoutes);
+app.use("/api", medicationRoutes);
+app.use("/api", medicationPrescriptionRoutes);
+app.use("/api", prescriptionComplianceRoutes);
+app.use("/api", medicationRecommendationRoutes);
+>>>>>>> b63c278 (API: chats, medication, treatment plan and appointment)
 
 // this should the last one
 app.use(errorHandler);
