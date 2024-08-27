@@ -12,6 +12,10 @@ const swaggerDefinition: OpenAPIV3.Document = {
       url: 'http://localhost:8080',
       description: 'Development server',
     },
+    {
+      url:'https://mindora-backend-beta-version.onrender.com',
+      description: 'Development server',
+    }
   ],
   components: {
     securitySchemes: {
