@@ -139,7 +139,7 @@
 /**
  * @swagger
  * /api/treatment-milestones/{id}:
- *   post:
+ *   delete:
  *     summary: Delete a treatment milestone
  *     tags: [Treatment milestones]
  *     parameters:

@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /api/milestone-task:
+ * /api/milestone-tasks:
  *   post:
  *     summary: Create a new milestone task
  *     tags: [Milestone tasks]
@@ -45,7 +45,7 @@
 
 /**
  * @swagger
- * /api/milestone-task:
+ * /api/milestone-tasks:
  *   get:
  *     summary: Get all milestone tasks
  *     tags: [Milestone tasks]
@@ -66,7 +66,7 @@
 
 /**
  * @swagger
- * /api/milestone-task/{id}:
+ * /api/milestone-tasks/{id}:
  *   get:
  *     summary: Get a single milestone task by ID
  *     tags: [Milestone tasks]
@@ -94,7 +94,7 @@
 
 /**
  * @swagger
- * /api/milestone-task/{id}:
+ * /api/milestone-tasks/{id}:
  *   put:
  *     summary: Update a milestone task
  *     tags: [Milestone tasks]
@@ -129,7 +129,7 @@
 
 /**
  * @swagger
- * /api/milestone-task/{id}:
+ * /api/milestone-tasks/{id}:
  *   delete:
  *     summary: Delete a milestone task
  *     tags: [Milestone tasks]
