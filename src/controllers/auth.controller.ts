@@ -76,6 +76,10 @@ export const requestPasswordReset = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { email } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
@@ -127,6 +131,10 @@ export const resetPassword = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { token } = req.params;
   const { password } = req.body;
 

@@ -3,6 +3,8 @@ import { register, login } from "../controllers/auth.controller";
 import {
   registerValidation,
   loginValidation,
+  resetPasswordValidation,
+  forgotPasswordValidation,
 } from "../middleware/validation.middleware";
 import {
   requestPasswordReset,
@@ -13,7 +15,7 @@ const router = Router();
 
 router.post("/register", registerValidation, register);
 router.post("/login", loginValidation, login);
-router.post("/forgot_password", requestPasswordReset);
-router.post("/reset_password/:token", resetPassword);
+router.post("/forgot_password", forgotPasswordValidation, requestPasswordReset);
+router.post("/reset_password/:token", resetPasswordValidation, resetPassword);
 
 export default router;
