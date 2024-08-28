@@ -95,7 +95,7 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM("patient", "therapist", "admin"),
+      type: DataTypes.STRING,
       defaultValue: "patient",
       allowNull: true,
     },

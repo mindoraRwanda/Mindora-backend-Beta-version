@@ -67,6 +67,16 @@ export const getChatMemberById = async (
     }
     const chatMember = await ChatMembers.findOne({
       where: { chatId },
+      include: [
+        {
+          model: User,
+          as: "user",
+          include: [
+            { model: Therapist, as: "therapist" },
+            { model: Patient, as: "patient" },
+          ],
+        },
+      ],
     });
     if (chatMember) {
       return res.status(200).json(chatMember);
@@ -85,13 +95,13 @@ export const updateChatMember = async (
   next: NextFunction
 ) => {
   try {
-    const { chatId } = req.params;
+    const { chatId, userId } = req.params;
     const data = req.body;
 
-    if (!chatId || !data) {
+    if (!userId || !chatId || !data) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    const chatMember = await ChatMembers.findOne({ where: { chatId } });
+    const chatMember = await ChatMembers.findOne({ where: { chatId, userId } });
     if (chatMember) {
       await chatMember.update(data);
       res.status(200).json(chatMember);
@@ -110,11 +120,11 @@ export const deleteChatMember = async (
   next: NextFunction
 ) => {
   try {
-    const { chatId } = req.params;
-    if (!chatId) {
+    const { chatId, userId } = req.params;
+    if (!chatId || !userId) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    const chatMember = await ChatMembers.findOne({ where: { chatId } });
+    const chatMember = await ChatMembers.findOne({ where: { chatId, userId } });
     if (chatMember) {
       await chatMember.destroy();
       res.status(204).json();

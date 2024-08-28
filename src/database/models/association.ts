@@ -15,6 +15,8 @@ import ChatMembers from "./chatMember";
 import Message from "./message";
 import Medication from "./medication";
 import MedicationPrescription from "./medicationPrescription";
+import PrescriptionCompliance from "./prescriptionCompliance";
+import MedicationRecommendation from "./medicationRecommendation";
 
 export const modelAssociation = async () => {
   // patient association
@@ -303,5 +305,32 @@ export const modelAssociation = async () => {
   MedicationPrescription.belongsTo(Medication, {
     as: "medication",
     foreignKey: "medicationId",
+  });
+
+  MedicationPrescription.hasMany(PrescriptionCompliance, {
+    as: "prescription_compliances",
+    foreignKey: "prescriptionId",
+  });
+  PrescriptionCompliance.belongsTo(MedicationPrescription, {
+    as: "prescription",
+    foreignKey: "prescriptionId",
+  });
+
+  Patient.hasMany(PrescriptionCompliance, {
+    as: "prescription_compliances",
+    foreignKey: "patientId",
+  });
+  PrescriptionCompliance.belongsTo(Patient, {
+    as: "patient",
+    foreignKey: "patientId",
+  });
+
+  Patient.hasMany(MedicationRecommendation, {
+    as: "medication_recommendation",
+    foreignKey: "patientId",
+  });
+  MedicationRecommendation.belongsTo(Patient, {
+    as: "patient",
+    foreignKey: "patientId",
   });
 };

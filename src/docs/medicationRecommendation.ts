@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /api/medication-recommendation:
+ * /api/medication-recommendations:
  *   post:
  *     summary: Create a new medication recommendation
  *     tags: [Medication recommendations]
@@ -39,7 +39,7 @@
 
 /**
  * @swagger
- * /api/medication-recommendation:
+ * /api/medication-recommendations:
  *   get:
  *     summary: Get all medication recommendations
  *     tags: [Medication recommendations]
@@ -60,7 +60,7 @@
 
 /**
  * @swagger
- * /api/medication-recommendation/{id}:
+ * /api/medication-recommendations/{id}:
  *   get:
  *     summary: Get a medication recommendation by ID
  *     tags: [Medication recommendations]
@@ -88,7 +88,7 @@
 
 /**
  * @swagger
- * /api/medication-recommendation/{id}:
+ * /api/medication-recommendations/{id}:
  *   put:
  *     summary: Update a medication recommendation
  *     tags: [Medication recommendations]
@@ -123,7 +123,7 @@
 
 /**
  * @swagger
- * /api/medication-recommendation/{id}:
+ * /api/medication-recommendations/{id}:
  *   delete:
  *     summary: Delete a medication recommendation
  *     tags: [Medication recommendations]

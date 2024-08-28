@@ -2,18 +2,20 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../../db";
 
 interface ChatMembersAttributes {
+  id: string;
   chatId: string;
   userId: string;
   role?: string;
 }
 
 interface ChatMembersCreationAttributes
-  extends Optional<ChatMembersAttributes, "role"> {}
+  extends Optional<ChatMembersAttributes, "role" | "id"> {}
 
 class ChatMembers
   extends Model<ChatMembersAttributes, ChatMembersCreationAttributes>
   implements ChatMembersAttributes
 {
+  public id!: string;
   public chatId!: string;
   public userId!: string;
   public role?: string;
@@ -21,6 +23,12 @@ class ChatMembers
 
 ChatMembers.init(
   {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
+    },
     chatId: {
       type: DataTypes.UUID,
       allowNull: false,

@@ -9,10 +9,10 @@ import {
 
 const router = Router();
 
-router.post("/electronic_health_records", createElectronicHealthRecord);
-router.get("/electronic_health_records", getElectronicHealthRecords);
-router.get("/electronic_health_records/:id", getElectronicHealthRecordById);
-router.put("/electronic_health_records/:id", updateElectronicHealthRecord);
-router.delete("/electronic_health_records/:id", deleteElectronicHealthRecord);
+router.post("/electronic-health-records", createElectronicHealthRecord);
+router.get("/electronic-health-records", getElectronicHealthRecords);
+router.get("/electronic-health-records/:id", getElectronicHealthRecordById);
+router.put("/electronic-health-records/:id", updateElectronicHealthRecord);
+router.delete("/electronic-health-records/:id", deleteElectronicHealthRecord);
 
 export default router;

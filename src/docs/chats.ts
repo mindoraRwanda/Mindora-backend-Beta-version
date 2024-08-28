@@ -55,7 +55,7 @@
 
 /**
  * @swagger
- * /api/chats/user/{userId}:
+ * /api/chats/{userId}:
  *   get:
  *     summary: Get all chats a user is part of by userId
  *     tags: [Chats]

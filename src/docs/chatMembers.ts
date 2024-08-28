@@ -87,7 +87,7 @@
 
 /**
  * @swagger
- * /api/chat_members/{chatId}:
+ * /api/chat_members/{chatId}/{userId}:
  *   put:
  *     summary: Update a chat member
  *     tags: [Chat members]
@@ -98,6 +98,12 @@
  *         schema:
  *           type: string
  *         description: The ID of the chat
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user in the chat
  *     requestBody:
  *       required: true
  *       content:
@@ -128,7 +134,7 @@
 
 /**
  * @swagger
- * /api/chat_members/{chatId}:
+ * /api/chat_members/{chatId}/{userId}:
  *   delete:
  *     summary: Delete a chat member
  *     tags: [Chat members]
@@ -139,6 +145,12 @@
  *         schema:
  *           type: string
  *         description: The ID of the chat
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user to be removed from the chat
  *     responses:
  *       204:
  *         description: Chat member deleted successfully

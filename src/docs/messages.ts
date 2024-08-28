@@ -74,7 +74,7 @@
 
 /**
  * @swagger
- * /api/messages/{chatId}:
+ * /api/chats/{chatId}/messages:
  *   get:
  *     summary: Get messages by chat ID
  *     tags: [Messages]
