@@ -14,6 +14,8 @@ export interface UserAttributes {
   profileImage?: string;
   password: string;
   role?: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiry?: Date | null;
 }
 
 // Define a type for the creation attributes, making all optional except password, email, username, firstName, and lastName
@@ -37,6 +39,8 @@ class User
   public profileImage?: string;
   public password!: string;
   public role!: string;
+  public resetPasswordToken?: string | null;
+  public resetPasswordExpiry?: Date | null;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -91,8 +95,16 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM('patient','therapist','admin'),
+      type: DataTypes.ENUM("patient", "therapist", "admin"),
       defaultValue: "patient",
+      allowNull: true,
+    },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetPasswordExpiry: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
   },

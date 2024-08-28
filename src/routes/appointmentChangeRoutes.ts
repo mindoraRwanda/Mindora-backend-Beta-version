@@ -19,7 +19,7 @@ router.get("/appointment_changes/:id", getAppointmentChangeById);
 router.put("/appointment_changes/:id", updateAppointmentChange);
 
 // Delete an appointment change
-router.post("/appointment_changes/:id", deleteAppointmentChange);
+router.delete("/appointment_changes/:id", deleteAppointmentChange);
 
 // Get all appointment changes
 router.get("/appointment_changes", getAllAppointmentChanges);

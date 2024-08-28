@@ -13,6 +13,6 @@ router.post("/treatment-milestones", createTreatmentMilestone);
 router.get("/treatment-milestones/:id", getTreatmentMilestoneById);
 router.get("/treatment-milestones", getTreatmentMilestones);
 router.put("/treatment-milestones/:id", updateTreatmentMilestone);
-router.post("/treatment-milestones/:id", deleteTreatmentMilestone);
+router.delete("/treatment-milestones/:id", deleteTreatmentMilestone);
 
 export default router;

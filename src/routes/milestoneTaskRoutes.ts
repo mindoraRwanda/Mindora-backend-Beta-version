@@ -22,6 +22,6 @@ router.get("/milestone-tasks", getMilestoneTasks);
 router.put("/milestone-tasks/:id", updateMilestoneTask);
 
 // Delete a milestone task
-router.post("/milestone-tasks/:id", deleteMilestoneTask);
+router.delete("/milestone-tasks/:id", deleteMilestoneTask);
 
 export default router;

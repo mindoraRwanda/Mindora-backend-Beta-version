@@ -249,6 +249,20 @@ export const modelAssociation = async () => {
     onUpdate: "CASCADE",
   });
 
+  User.hasMany(ChatMembers, {
+    foreignKey: "userId",
+    as: "chat-members",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
+  ChatMembers.belongsTo(User, {
+    foreignKey: "userId",
+    as: "user",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
   Chat.hasMany(Message, {
     foreignKey: "chatId",
     as: "messages",

@@ -78,3 +78,80 @@
  *       400:
  *         description: Validation errors or invalid credentials
  */
+
+/**
+ * @swagger
+ * /api/auth/forgot_password:
+ *   post:
+ *     summary: Initiate the password reset process
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address for which the password reset is requested
+ *     responses:
+ *       200:
+ *         description: Password reset link sent to the user's email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Confirmation message indicating that the reset link has been sent
+ *       404:
+ *         description: User with the provided email does not exist
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/auth/reset_password/{token}:
+ *   post:
+ *     summary: Reset the user's password
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The password reset token sent to the user's email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: The new password to be set
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Confirmation message indicating the password has been reset
+ *       400:
+ *         description: Invalid or expired token, or validation errors
+ *       500:
+ *         description: Internal server error
+ */

@@ -13,6 +13,6 @@ router.post("/treatment_adjustments", createTreatmentPlanAdjustment);
 router.get("/treatment_adjustments", getTreatmentPlanAdjustments);
 router.get("/treatment_adjustments/:id", getTreatmentPlanAdjustmentById);
 router.put("/treatment_adjustments/:id", updateTreatmentPlanAdjustment);
-router.post("/treatment_adjustments/:id", deleteTreatmentPlanAdjustment);
+router.delete("/treatment_adjustments/:id", deleteTreatmentPlanAdjustment);
 
 export default router;

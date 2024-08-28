@@ -13,6 +13,6 @@ router.post("/appointments", createAppointment);
 router.get("/appointments", getAppointments);
 router.get("/appointments/:id", getAppointmentById);
 router.put("/appointments/:id", updateAppointment);
-router.post("/appointments/:id", deleteAppointment);
+router.delete("/appointments/:id", deleteAppointment);
 
 export default router;

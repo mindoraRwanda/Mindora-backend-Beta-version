@@ -13,6 +13,6 @@ router.post("/treatment-goals", createTreatmentGoal);
 router.get("/treatment-goals/:id", getTreatmentGoalById);
 router.get("/treatment-goals", getTreatmentGoals);
 router.put("/treatment-goals/:id", updateTreatmentGoal);
-router.post("/treatment-goals/:id", deleteTreatmentGoal);
+router.delete("/treatment-goals/:id", deleteTreatmentGoal);
 
 export default router;
