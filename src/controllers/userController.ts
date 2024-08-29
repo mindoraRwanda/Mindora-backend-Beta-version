@@ -118,3 +118,28 @@ export const deleteUser = async (
     next(error);
   }
 };
+
+export const uploadProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const file = req.file;
+    const { userId } = req.params;
+    if (!file) {
+      return res.status(400).json({ message: "No picture uploaded." });
+    }
+    if (!userId) {
+      return res.status(400).json({ message: "User id is missing" });
+    }
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await user.update({ profileImage: file.path });
+    return res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
