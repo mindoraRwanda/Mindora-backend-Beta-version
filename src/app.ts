@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import path from "path";
 import cors from "cors";
 import sequelize from "./db";
 import dotenv from "dotenv";
@@ -42,6 +43,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.use(bodyParser.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads/**/")));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", userRoutes);
 app.use("/api", patientRoutes);
