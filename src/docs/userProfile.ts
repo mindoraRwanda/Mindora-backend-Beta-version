@@ -70,4 +70,18 @@
  *                   example: "User not found"
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Only images (jpeg, jpg, png) are allowed for profile pictures."
+ *                 statusCode:
+ *                   type: number
+ *                   example: 500
+ *                 status:
+ *                   type: string
+ *                   example: "error"
  */
