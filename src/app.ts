@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import sequelize from "./db";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
@@ -34,6 +35,8 @@ import medicationRecommendationRoutes from "./routes/medicationRecommendationRou
 dotenv.config();
 
 const app = express();
+app.use(cors());
+
 // integrates socket server
 const server = createServer(app);
 const io = new Server(server);
