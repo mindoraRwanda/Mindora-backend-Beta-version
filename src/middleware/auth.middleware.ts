@@ -73,8 +73,12 @@ export const isAuthenticated = async (
 };
 
 // Middleware to check permissions
+<<<<<<< HEAD
 export const checkPermission =
   (permissionRole: string) =>
+=======
+export const checkPermission = (permissionRole: string) =>
+>>>>>>> 95cc2c6592aa21b0f15990b7e3a58e5f3f2d8d93
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     const userInfo = req.user;
     if (userInfo) {
