@@ -17,6 +17,12 @@ import Medication from "./medication";
 import MedicationPrescription from "./medicationPrescription";
 import PrescriptionCompliance from "./prescriptionCompliance";
 import MedicationRecommendation from "./medicationRecommendation";
+import Exercise from "./exercise";
+import ExerciseQuestion from "./exerciseQuestion";
+import UserExercise from "./userExercises";
+import UserExerciseResponse from "./userExerciseResponse";
+import Reward from "./reward";
+import UserReward from "./userReward";
 
 export const modelAssociation = async () => {
   // patient association
@@ -332,5 +338,61 @@ export const modelAssociation = async () => {
   MedicationRecommendation.belongsTo(Patient, {
     as: "patient",
     foreignKey: "patientId",
+  });
+
+  // exercises
+  Exercise.hasMany(ExerciseQuestion, {
+    as: "questions",
+    foreignKey: "exerciseId",
+  });
+  ExerciseQuestion.belongsTo(Exercise, {
+    as: "exercise",
+    foreignKey: "exerciseId",
+  });
+  // user exercises
+  Exercise.hasMany(UserExercise, {
+    as: "user_exercises",
+    foreignKey: "exerciseId",
+  });
+  UserExercise.belongsTo(Exercise, {
+    as: "exercise",
+    foreignKey: "exerciseId",
+  });
+
+  User.hasMany(UserExercise, {
+    as: "exercises",
+    foreignKey: "userId",
+  });
+  UserExercise.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
+  });
+
+  UserExercise.hasMany(UserExerciseResponse, {
+    as: "responses",
+    foreignKey: "userExerciseId",
+  });
+  UserExerciseResponse.belongsTo(UserExercise, {
+    as: "user_exercise",
+    foreignKey: "userExerciseId",
+  });
+
+  // rewards
+  Reward.hasMany(UserReward, {
+    as: "user_rewards",
+    foreignKey: "rewardId",
+  });
+  UserReward.belongsTo(Reward, {
+    as: "reward",
+    foreignKey: "rewardId",
+  });
+
+  User.hasMany(UserReward, {
+    as: "user_rewards",
+    foreignKey: "userId",
+  });
+  UserReward.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
   });
 };
