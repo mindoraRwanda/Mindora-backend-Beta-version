@@ -32,6 +32,12 @@ import medicationRoutes from "./routes/medicationRoutes";
 import medicationPrescriptionRoutes from "./routes/medicationPrescriptionRoutes";
 import prescriptionComplianceRoutes from "./routes/prescriptionComplianceRoutes";
 import medicationRecommendationRoutes from "./routes/medicationRecommendationRoutes";
+import exercisesRoutes from "./routes/exerciseRoutes";
+import exerciseQuestionRoutes from "./routes/exerciseQuestionRoutes";
+import userExerciseRoutes from "./routes/userExerciseRoutes";
+import userExerciseResponseRoutes from "./routes/userExerciseResponseRoutes";
+import rewardsRoutes from "./routes/rewardsRoutes";
+import userRewardRoutes from "./routes/userRewardRoutes";
 
 dotenv.config();
 
@@ -67,6 +73,12 @@ app.use("/api", medicationRoutes);
 app.use("/api", medicationPrescriptionRoutes);
 app.use("/api", prescriptionComplianceRoutes);
 app.use("/api", medicationRecommendationRoutes);
+app.use("/api", exercisesRoutes);
+app.use("/api", exerciseQuestionRoutes);
+app.use("/api", userExerciseRoutes);
+app.use("/api", userExerciseResponseRoutes);
+app.use("/api", rewardsRoutes);
+app.use("/api", userRewardRoutes);
 
 // this should the last one
 app.use(errorHandler);
