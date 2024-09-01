@@ -38,6 +38,11 @@ import userExerciseRoutes from "./routes/userExerciseRoutes";
 import userExerciseResponseRoutes from "./routes/userExerciseResponseRoutes";
 import rewardsRoutes from "./routes/rewardsRoutes";
 import userRewardRoutes from "./routes/userRewardRoutes";
+import supportCommunityRoutes from "./routes/supportCommunityRoutes";
+import communityPostRoutes from "./routes/communityPostRoutes";
+import commentsRoutes from "./routes/commentsRoutes";
+import postReactionRoutes from "./routes/postReactionsRoutes";
+import moderationActionsRoutes from "./routes/communityModerationRoutes";
 
 dotenv.config();
 
@@ -79,6 +84,11 @@ app.use("/api", userExerciseRoutes);
 app.use("/api", userExerciseResponseRoutes);
 app.use("/api", rewardsRoutes);
 app.use("/api", userRewardRoutes);
+app.use("/api", supportCommunityRoutes);
+app.use("/api", communityPostRoutes);
+app.use("/api", commentsRoutes);
+app.use("/api", postReactionRoutes);
+app.use("/api", moderationActionsRoutes);
 
 // this should the last one
 app.use(errorHandler);

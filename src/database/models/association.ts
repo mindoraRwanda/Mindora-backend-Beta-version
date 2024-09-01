@@ -23,6 +23,10 @@ import UserExercise from "./userExercises";
 import UserExerciseResponse from "./userExerciseResponse";
 import Reward from "./reward";
 import UserReward from "./userReward";
+import SupportCommunity from "./community";
+import CommunityPost from "./communityPost";
+import Comment from "./comment";
+import PostReaction from "./postReaction";
 
 export const modelAssociation = async () => {
   // patient association
@@ -394,5 +398,77 @@ export const modelAssociation = async () => {
   UserReward.belongsTo(User, {
     as: "user",
     foreignKey: "userId",
+  });
+  // support community
+  User.hasMany(SupportCommunity, {
+    as: "support_communities",
+    foreignKey: "moderatorId",
+  });
+  SupportCommunity.belongsTo(User, {
+    as: "moderator",
+    foreignKey: "moderatorId",
+  });
+
+  // community posts
+  SupportCommunity.hasMany(CommunityPost, {
+    as: "posts",
+    foreignKey: "communityId",
+  });
+  CommunityPost.belongsTo(SupportCommunity, {
+    as: "community",
+    foreignKey: "communityId",
+  });
+
+  User.hasMany(CommunityPost, {
+    as: "posts",
+    foreignKey: "createdBy",
+  });
+  CommunityPost.belongsTo(User, {
+    as: "user",
+    foreignKey: "createdBy",
+  });
+  // comments
+  User.hasMany(Comment, {
+    as: "post_comments",
+    foreignKey: "createdBy",
+  });
+  Comment.belongsTo(User, {
+    as: "user",
+    foreignKey: "createdBy",
+  });
+
+  CommunityPost.hasMany(Comment, {
+    as: "comments",
+    foreignKey: "postId",
+  });
+  Comment.belongsTo(CommunityPost, {
+    as: "post",
+    foreignKey: "postId",
+  });
+  Comment.hasMany(Comment, {
+    as: "replies",
+    foreignKey: "parentCommentId",
+  });
+  Comment.belongsTo(Comment, {
+    as: "parent_comment",
+    foreignKey: "parentCommentId",
+  });
+
+  Comment.hasMany(PostReaction, {
+    as: "reactions",
+    foreignKey: "commentId",
+  });
+  PostReaction.belongsTo(Comment, {
+    as: "comment",
+    foreignKey: "commentId",
+  });
+
+  CommunityPost.hasMany(PostReaction, {
+    as: "reactions",
+    foreignKey: "postId",
+  });
+  PostReaction.belongsTo(CommunityPost, {
+    as: "post",
+    foreignKey: "postId",
   });
 };
