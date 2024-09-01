@@ -27,6 +27,7 @@ import SupportCommunity from "./community";
 import CommunityPost from "./communityPost";
 import Comment from "./comment";
 import PostReaction from "./postReaction";
+import CommunityModerationAction from "./CommunityModerationAction";
 
 export const modelAssociation = async () => {
   // patient association
@@ -470,5 +471,32 @@ export const modelAssociation = async () => {
   PostReaction.belongsTo(CommunityPost, {
     as: "post",
     foreignKey: "postId",
+  });
+
+  CommunityPost.hasMany(CommunityModerationAction, {
+    as: "moderation_actions",
+    foreignKey: "postId",
+  });
+  CommunityModerationAction.belongsTo(CommunityPost, {
+    as: "post",
+    foreignKey: "postId",
+  });
+
+  Comment.hasMany(CommunityModerationAction, {
+    as: "moderations",
+    foreignKey: "commentId",
+  });
+  CommunityModerationAction.belongsTo(Comment, {
+    as: "comment",
+    foreignKey: "commentId",
+  });
+
+  User.hasMany(CommunityModerationAction, {
+    as: "moderation_actions",
+    foreignKey: "actionBy",
+  });
+  CommunityModerationAction.belongsTo(User, {
+    as: "user",
+    foreignKey: "actionBy",
   });
 };

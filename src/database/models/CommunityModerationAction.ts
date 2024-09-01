@@ -7,6 +7,7 @@ interface CommunityModerationActionAttributes {
   commentId?: string;
   actionTaken: string;
   actionBy: string;
+  reason: string;
 }
 
 interface CommunityModerationActionCreationAttributes
@@ -24,6 +25,7 @@ class CommunityModerationAction
   public commentId?: string;
   public actionTaken!: string;
   public actionBy!: string;
+  public reason!: string;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -65,6 +67,10 @@ CommunityModerationAction.init(
         model: "users",
         key: "id",
       },
+    },
+    reason: {
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
   },
   {

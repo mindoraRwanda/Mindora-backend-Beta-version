@@ -19,6 +19,9 @@
  *               postId:
  *                 type: string
  *                 description: The ID of the post on which action is taken
+ *               commentId:
+ *                 type: string
+ *                 description: The ID of the comment on which action is taken
  *               actionTaken:
  *                 type: string
  *                 example: "Remove Post"
@@ -112,6 +115,9 @@
  *               postId:
  *                 type: string
  *                 description: The ID of the post on which action is taken
+ *               commentId:
+ *                 type: string
+ *                 description: The ID of the comment on which action is taken
  *               actionTaken:
  *                 type: string
  *                 example: "Remove Post"
@@ -174,6 +180,9 @@
  *         postId:
  *           type: string
  *           description: The UUID of the moderator
+ *         commentId:
+ *           type: string
+ *           description: The ID of the comment on which action is taken
  *         actionTaken:
  *           type: string
  *           example: "Remove Post"

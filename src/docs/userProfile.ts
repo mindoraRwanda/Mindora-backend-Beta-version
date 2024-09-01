@@ -5,8 +5,6 @@
  *     summary: Upload a profile picture for a user
  *     tags:
  *       - User
- *     consumes:
- *       - multipart/form-data
  *     parameters:
  *       - in: path
  *         name: userId
@@ -14,12 +12,17 @@
  *         schema:
  *           type: string
  *         description: The ID of the user
- *       - in: formData
- *         name: profile
- *         type: file
- *         format: binary
- *         required: true
- *         description: The profile picture to upload
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profile:
+ *                 type: string
+ *                 format: binary
+ *                 description: The profile picture to upload
  *     responses:
  *       200:
  *         description: Profile picture uploaded successfully
@@ -30,22 +33,21 @@
  *               properties:
  *                 id:
  *                   type: string
- *                   description: The ID of the user
  *                 profileImage:
  *                   type: string
  *                   description: The path to the uploaded profile image
  *                 firstName:
  *                   type: string
- *                   description: First name of the user
+ *                   description: First name of user
  *                 lastName:
  *                   type: string
- *                   description: Last name of the user
+ *                   description: last name of user
  *                 username:
  *                   type: string
- *                   description: Username of the user
+ *                   description: username of user
  *                 password:
  *                   type: string
- *                   description: Hashed password of the user
+ *                   description: hashed password of user
  *       400:
  *         description: Bad Request. Either no picture was uploaded, or userId was missing.
  *         content:

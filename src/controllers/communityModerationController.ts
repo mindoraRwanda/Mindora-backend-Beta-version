@@ -10,7 +10,7 @@ export const createCommunityModerationAction = async (
   next: NextFunction
 ) => {
   try {
-    const { postId, commentId, actionTaken, actionBy } = req.body;
+    const { postId, commentId, actionTaken, actionBy, reason } = req.body;
 
     if (!postId || !actionTaken || !actionBy) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
@@ -21,6 +21,7 @@ export const createCommunityModerationAction = async (
       commentId,
       actionTaken,
       actionBy,
+      reason,
     });
 
     res.status(201).json(moderationAction);
