@@ -1,33 +1,39 @@
 import multer, { StorageEngine, FileFilterCallback } from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "./cloudinaryConfig";
 import path from "path";
-import fs from "fs";
 import { Request } from "express";
 
 // Storage engine for uploads
-const storage: StorageEngine = multer.diskStorage({
-  destination: (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, destination: string) => void
-  ) => {
-    const uploadPath = path.join(__dirname, "..", "uploads");
-    // Ensure directory exists
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: (req: Request, file: Express.Multer.File) => {
+    const mimeToFormatMap: { [key: string]: string } = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/gif": "gif",
+      "application/pdf": "pdf",
+      "application/msword": "doc",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        "docx",
+      "video/mp4": "mp4",
+      "video/x-msvideo": "avi",
+      "video/x-matroska": "mkv",
+      "audio/mpeg": "mp3",
+      "audio/wav": "wav",
+      "audio/aac": "aac",
+      "audio/ogg": "ogg",
+    };
 
-    cb(null, uploadPath);
-  },
-  filename: (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, filename: string) => void
-  ) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    return {
+      folder: "uploads",
+      format: mimeToFormatMap[file.mimetype] || undefined, // Preserve original format if not found
+      public_id: `${Date.now()}-${file.originalname.split(".")[0]}`, // Use original name without extension as part of the public ID
+    };
   },
 });
 
-// File filter for profile picture
+// File filter for profile pictures
 const profilePicFilter = (
   req: Request,
   file: Express.Multer.File,
