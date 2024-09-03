@@ -8,10 +8,17 @@ export const createSymptomLog = async (
   next: NextFunction
 ) => {
   try {
-    const { userId, symptom, severity, frequency, onset, description } =
-      req.body;
+    const {
+      userId,
+      symptom,
+      severity,
+      frequency,
+      onset,
+      description,
+      logDate,
+    } = req.body;
 
-    if (!userId || !symptom || !severity || !frequency || !onset) {
+    if (!userId || !symptom || !severity || !frequency || !onset || !logDate) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
@@ -22,6 +29,7 @@ export const createSymptomLog = async (
       frequency,
       onset,
       description,
+      logDate,
     });
 
     res.status(201).json(symptomLog);

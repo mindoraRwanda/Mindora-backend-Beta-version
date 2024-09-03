@@ -64,7 +64,7 @@ export const login = async (
       }
     );
     // localStorage.setItem('token', token);
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
   } catch (error) {
     next(error);
   }

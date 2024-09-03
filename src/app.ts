@@ -45,6 +45,11 @@ import postReactionRoutes from "./routes/postReactionsRoutes";
 import moderationActionsRoutes from "./routes/communityModerationRoutes";
 import symptomLogRoutes from "./routes/symptomLogRoutes";
 import moodLogRoutes from "./routes/moodLogsRoutes";
+import progressReportRoutes from "./routes/progressReportRoutes";
+import {
+  generateMoodSummary,
+  generateSymptomSummary,
+} from "./utils/generateLogSummary";
 
 dotenv.config();
 
@@ -93,6 +98,7 @@ app.use("/api", postReactionRoutes);
 app.use("/api", moderationActionsRoutes);
 app.use("/api", symptomLogRoutes);
 app.use("/api", moodLogRoutes);
+app.use("/api", progressReportRoutes);
 
 // this should the last one
 app.use(errorHandler);
@@ -129,6 +135,13 @@ console.log("a user connected");
 //   });
 // });
 
+const startDate = new Date(
+  "Mon Sep 01 2024 00:00:00 GMT+0200 (South Africa Standard Time)"
+);
+const endDate = new Date(
+  "Mon Sep 03 2024 00:00:00 GMT+0200 (South Africa Standard Time)"
+);
+
 const startServer = async () => {
   sequelize.authenticate().then(() => {
     console.log(
@@ -136,6 +149,17 @@ const startServer = async () => {
     );
   });
   await modelAssociation();
+  // const r = await generateMoodSummary(
+  //   "d4abcf82-f74e-40e9-9e47-cbbf0ef82884",
+  //   startDate,
+  //   endDate
+  // );
+  const s = await generateSymptomSummary(
+    "95a0c0c6-2077-4389-ac94-9c9684288820",
+    startDate,
+    endDate
+  );
+  console.log(s);
   // await sequelize.sync({ alter: true });
   server.listen(8080, () => {
     console.log("Server is running on port 8080 🚀");

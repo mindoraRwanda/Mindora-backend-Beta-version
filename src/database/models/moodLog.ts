@@ -9,6 +9,7 @@ interface MoodLogAttributes {
   rating: number;
   condition?: string;
   description?: string;
+  logDate: Date;
 }
 
 // Define the attributes required when creating a new MoodLog
@@ -25,6 +26,7 @@ class MoodLog
   public rating!: number;
   public condition?: string;
   public description?: string;
+  public logDate!: Date;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -62,6 +64,10 @@ MoodLog.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    logDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
   },
   {

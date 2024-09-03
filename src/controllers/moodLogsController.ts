@@ -8,9 +8,9 @@ export const createMoodLog = async (
   next: NextFunction
 ) => {
   try {
-    const { userId, mood, rating, condition, description } = req.body;
+    const { userId, mood, rating, condition, description, logDate } = req.body;
 
-    if (!userId || !mood || rating === undefined) {
+    if (!userId || !mood || rating === undefined || !logDate) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
@@ -20,6 +20,7 @@ export const createMoodLog = async (
       rating,
       condition,
       description,
+      logDate,
     });
 
     res.status(201).json(moodLog);

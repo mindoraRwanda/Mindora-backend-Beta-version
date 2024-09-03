@@ -9,6 +9,7 @@ interface SymptomLogAttributes {
   frequency: "rare" | "occasional" | "frequent" | "constant"; // Adjust values as needed
   onset: Date;
   description?: string;
+  logDate: Date;
 }
 
 interface SymptomLogCreationAttributes
@@ -25,6 +26,7 @@ class SymptomLog
   public frequency!: "rare" | "occasional" | "frequent" | "constant";
   public onset!: Date;
   public description?: string;
+  public logDate!: Date;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -66,6 +68,10 @@ SymptomLog.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    logDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
   },
   {
