@@ -46,10 +46,6 @@ import moderationActionsRoutes from "./routes/communityModerationRoutes";
 import symptomLogRoutes from "./routes/symptomLogRoutes";
 import moodLogRoutes from "./routes/moodLogsRoutes";
 import progressReportRoutes from "./routes/progressReportRoutes";
-import {
-  generateMoodSummary,
-  generateSymptomSummary,
-} from "./utils/generateLogSummary";
 
 dotenv.config();
 
@@ -149,17 +145,7 @@ const startServer = async () => {
     );
   });
   await modelAssociation();
-  // const r = await generateMoodSummary(
-  //   "d4abcf82-f74e-40e9-9e47-cbbf0ef82884",
-  //   startDate,
-  //   endDate
-  // );
-  const s = await generateSymptomSummary(
-    "95a0c0c6-2077-4389-ac94-9c9684288820",
-    startDate,
-    endDate
-  );
-  console.log(s);
+
   // await sequelize.sync({ alter: true });
   server.listen(8080, () => {
     console.log("Server is running on port 8080 🚀");
