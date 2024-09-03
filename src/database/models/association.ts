@@ -28,6 +28,8 @@ import CommunityPost from "./communityPost";
 import Comment from "./comment";
 import PostReaction from "./postReaction";
 import CommunityModerationAction from "./CommunityModerationAction";
+import SymptomLog from "./symptomLog";
+import MoodLog from "./moodLog";
 
 export const modelAssociation = async () => {
   // patient association
@@ -498,5 +500,23 @@ export const modelAssociation = async () => {
   CommunityModerationAction.belongsTo(User, {
     as: "user",
     foreignKey: "actionBy",
+  });
+  // symptom logging
+  User.hasMany(SymptomLog, {
+    as: "symptoms",
+    foreignKey: "userId",
+  });
+  SymptomLog.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
+  });
+  // mood logging
+  User.hasMany(MoodLog, {
+    as: "moods",
+    foreignKey: "userId",
+  });
+  MoodLog.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
   });
 };

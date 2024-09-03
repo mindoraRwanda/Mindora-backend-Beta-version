@@ -43,6 +43,8 @@ import communityPostRoutes from "./routes/communityPostRoutes";
 import commentsRoutes from "./routes/commentsRoutes";
 import postReactionRoutes from "./routes/postReactionsRoutes";
 import moderationActionsRoutes from "./routes/communityModerationRoutes";
+import symptomLogRoutes from "./routes/symptomLogRoutes";
+import moodLogRoutes from "./routes/moodLogsRoutes";
 
 dotenv.config();
 
@@ -89,6 +91,8 @@ app.use("/api", communityPostRoutes);
 app.use("/api", commentsRoutes);
 app.use("/api", postReactionRoutes);
 app.use("/api", moderationActionsRoutes);
+app.use("/api", symptomLogRoutes);
+app.use("/api", moodLogRoutes);
 
 // this should the last one
 app.use(errorHandler);
