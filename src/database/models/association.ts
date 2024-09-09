@@ -30,6 +30,10 @@ import PostReaction from "./postReaction";
 import CommunityModerationAction from "./CommunityModerationAction";
 import SymptomLog from "./symptomLog";
 import MoodLog from "./moodLog";
+import Course from "./course";
+import CourseEnrollment from "./courseEnrollment";
+import Video from "./video";
+import Article from "./article";
 
 export const modelAssociation = async () => {
   // patient association
@@ -518,5 +522,31 @@ export const modelAssociation = async () => {
   MoodLog.belongsTo(User, {
     as: "user",
     foreignKey: "userId",
+  });
+  // courses and enrollments
+  Course.hasMany(CourseEnrollment, {
+    as: "enrollments",
+    foreignKey: "courseId",
+  });
+  CourseEnrollment.belongsTo(Course, {
+    as: "course",
+    foreignKey: "courseId",
+  });
+
+  Course.hasMany(Video, {
+    as: "videos",
+    foreignKey: "courseId",
+  });
+  Video.belongsTo(Course, {
+    as: "course",
+    foreignKey: "courseId",
+  });
+  Course.hasMany(Article, {
+    as: "articles",
+    foreignKey: "courseId",
+  });
+  Article.belongsTo(Course, {
+    as: "course",
+    foreignKey: "courseId",
   });
 };

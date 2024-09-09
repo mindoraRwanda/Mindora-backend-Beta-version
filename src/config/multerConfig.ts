@@ -7,7 +7,7 @@ import { Request } from "express";
 // Storage engine for uploads
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: (req: Request, file: Express.Multer.File) => {
+  params: async (req: Request, file: Express.Multer.File) => {
     const mimeToFormatMap: { [key: string]: string } = {
       "image/jpeg": "jpg",
       "image/png": "png",
@@ -24,11 +24,17 @@ const storage = new CloudinaryStorage({
       "audio/aac": "aac",
       "audio/ogg": "ogg",
     };
-
+    let resource_type = "auto";
+    if (file.mimetype.startsWith("image/")) {
+      resource_type = "image";
+    } else if (file.mimetype.startsWith("video/")) {
+      resource_type = "video";
+    }
     return {
       folder: "uploads",
       format: mimeToFormatMap[file.mimetype] || undefined, // Preserve original format if not found
       public_id: `${Date.now()}-${file.originalname.split(".")[0]}`, // Use original name without extension as part of the public ID
+      resource_type: resource_type,
     };
   },
 });
@@ -63,11 +69,12 @@ const generalFileFilter = (
   cb: FileFilterCallback
 ) => {
   const allowedTypes =
-    /jpeg|jpg|png|gif|pdf|doc|docx|mp4|avi|mkv|mp3|wav|aac|ogg/;
+    /jpeg|jpg|png|gif|pdf|doc|docx|mp4|avi|mkv|mp3|mpeg|wav|aac|ogg/;
   const extname = allowedTypes.test(
     path.extname(file.originalname).toLowerCase()
   );
   const mimetype = allowedTypes.test(file.mimetype);
+  // console.log("mimetype", file.mimetype, "mimeType: ", mimetype);
 
   if (extname && mimetype) {
     cb(null, true);
@@ -91,5 +98,5 @@ export const uploadProfilePic = multer({
 export const uploadGeneral = multer({
   storage,
   fileFilter: generalFileFilter,
-  limits: { fileSize: 1024 * 1024 * 100 }, // 100MB limit for general files (e.g., video tutorials)
+  // limits: { fileSize: 1024 * 1024 * 500 }, // 500MB limit for general files (e.g., video tutorials)
 });
