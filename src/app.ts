@@ -4,6 +4,7 @@ import path from "path";
 import cors from "cors";
 import sequelize from "./db";
 import dotenv from "dotenv";
+import "./utils/scheduledTasks";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { errorHandler } from "./middleware/error.middleware";
@@ -50,6 +51,10 @@ import courseRoutes from "./routes/courseRoutes";
 import courseEnrollmentRoutes from "./routes/courseEnrollmentsRoutes";
 import articlesRoutes from "./routes/articlesRoutes";
 import videosRoutes from "./routes/videosRoutes";
+import membershipPlanRoutes from "./routes/membershipPlanRoutes";
+import subscriptionsRoutes from "./routes/subscriptionsRoutes";
+import subscriptionChangesRoutes from "./routes/subscriptionChangesRoutes";
+import subscriptionLinkedAccountsRoutes from "./routes/subscriptionLinkedAccountsRoutes";
 
 dotenv.config();
 
@@ -103,6 +108,10 @@ app.use("/api", articlesRoutes);
 app.use("/api", videosRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", courseEnrollmentRoutes);
+app.use("/api", membershipPlanRoutes);
+app.use("/api", subscriptionsRoutes);
+app.use("/api", subscriptionChangesRoutes);
+app.use("/api", subscriptionLinkedAccountsRoutes);
 
 // this should the last one
 app.use(errorHandler);

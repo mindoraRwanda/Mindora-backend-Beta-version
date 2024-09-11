@@ -34,6 +34,10 @@ import Course from "./course";
 import CourseEnrollment from "./courseEnrollment";
 import Video from "./video";
 import Article from "./article";
+import MembershipPlan from "./membershipPlan";
+import Subscription from "./subscription";
+import SubscriptionChange from "./subscriptionChange";
+import SubscriptionLinkedAccount from "./subscriptionLinkedAccount";
 
 export const modelAssociation = async () => {
   // patient association
@@ -548,5 +552,41 @@ export const modelAssociation = async () => {
   Article.belongsTo(Course, {
     as: "course",
     foreignKey: "courseId",
+  });
+  // membership plans
+  MembershipPlan.hasMany(Subscription, {
+    as: "subscriptions",
+    foreignKey: "membershipPlanId",
+  });
+  Subscription.belongsTo(MembershipPlan, {
+    as: "membershipPlan",
+    foreignKey: "membershipPlanId",
+  });
+
+  Subscription.hasMany(SubscriptionChange, {
+    as: "changes",
+    foreignKey: "subscriptionId",
+  });
+  SubscriptionChange.belongsTo(Subscription, {
+    as: "subscription",
+    foreignKey: "subscriptionId",
+  });
+  // linked accounts
+  Subscription.hasMany(SubscriptionLinkedAccount, {
+    as: "linkedAccounts",
+    foreignKey: "subscriptionId",
+  });
+  SubscriptionLinkedAccount.belongsTo(Subscription, {
+    as: "subscription",
+    foreignKey: "subscriptionId",
+  });
+
+  User.hasMany(SubscriptionLinkedAccount, {
+    as: "subscriptionLinkedAccounts",
+    foreignKey: "subscriptionId",
+  });
+  SubscriptionLinkedAccount.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
   });
 };
