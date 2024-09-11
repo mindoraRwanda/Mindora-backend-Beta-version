@@ -30,6 +30,14 @@ import PostReaction from "./postReaction";
 import CommunityModerationAction from "./CommunityModerationAction";
 import SymptomLog from "./symptomLog";
 import MoodLog from "./moodLog";
+import Course from "./course";
+import CourseEnrollment from "./courseEnrollment";
+import Video from "./video";
+import Article from "./article";
+import MembershipPlan from "./membershipPlan";
+import Subscription from "./subscription";
+import SubscriptionChange from "./subscriptionChange";
+import SubscriptionLinkedAccount from "./subscriptionLinkedAccount";
 
 export const modelAssociation = async () => {
   // patient association
@@ -516,6 +524,68 @@ export const modelAssociation = async () => {
     foreignKey: "userId",
   });
   MoodLog.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
+  });
+  // courses and enrollments
+  Course.hasMany(CourseEnrollment, {
+    as: "enrollments",
+    foreignKey: "courseId",
+  });
+  CourseEnrollment.belongsTo(Course, {
+    as: "course",
+    foreignKey: "courseId",
+  });
+
+  Course.hasMany(Video, {
+    as: "videos",
+    foreignKey: "courseId",
+  });
+  Video.belongsTo(Course, {
+    as: "course",
+    foreignKey: "courseId",
+  });
+  Course.hasMany(Article, {
+    as: "articles",
+    foreignKey: "courseId",
+  });
+  Article.belongsTo(Course, {
+    as: "course",
+    foreignKey: "courseId",
+  });
+  // membership plans
+  MembershipPlan.hasMany(Subscription, {
+    as: "subscriptions",
+    foreignKey: "membershipPlanId",
+  });
+  Subscription.belongsTo(MembershipPlan, {
+    as: "membershipPlan",
+    foreignKey: "membershipPlanId",
+  });
+
+  Subscription.hasMany(SubscriptionChange, {
+    as: "changes",
+    foreignKey: "subscriptionId",
+  });
+  SubscriptionChange.belongsTo(Subscription, {
+    as: "subscription",
+    foreignKey: "subscriptionId",
+  });
+  // linked accounts
+  Subscription.hasMany(SubscriptionLinkedAccount, {
+    as: "linkedAccounts",
+    foreignKey: "subscriptionId",
+  });
+  SubscriptionLinkedAccount.belongsTo(Subscription, {
+    as: "subscription",
+    foreignKey: "subscriptionId",
+  });
+
+  User.hasMany(SubscriptionLinkedAccount, {
+    as: "subscriptionLinkedAccounts",
+    foreignKey: "subscriptionId",
+  });
+  SubscriptionLinkedAccount.belongsTo(User, {
     as: "user",
     foreignKey: "userId",
   });

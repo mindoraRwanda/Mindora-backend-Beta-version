@@ -6,8 +6,19 @@ import dotenv from "dotenv";
 import crypto from "crypto";
 import { Op } from "sequelize";
 import nodemailer from "nodemailer";
+import Subscription from "../database/models/subscription";
+import MembershipPlan from "../database/models/membershipPlan";
+import SubscriptionLinkedAccount from "../database/models/subscriptionLinkedAccount";
 
 dotenv.config();
+
+interface SubscriptionWithMembershipPlan extends Subscription {
+  membershipPlan?: MembershipPlan;
+}
+
+interface linkedAccountWithMembershipPlan extends SubscriptionLinkedAccount {
+  subscription?: SubscriptionWithMembershipPlan;
+}
 
 export const register = async (
   req: Request,
@@ -56,6 +67,28 @@ export const login = async (
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    let subscription: SubscriptionWithMembershipPlan | null =
+      await Subscription.findOne({
+        where: { userId: user.id },
+        include: { model: MembershipPlan, as: "membershipPlan" },
+      });
+
+    const linkedAccount: linkedAccountWithMembershipPlan | null =
+      await SubscriptionLinkedAccount.findOne({
+        where: {
+          userId: user.id,
+        },
+        include: {
+          model: Subscription,
+          as: "subscription",
+          include: [{ model: MembershipPlan, as: "membershipPlan" }],
+        },
+      });
+
+    const plan = subscription?.membershipPlan
+      ? subscription?.membershipPlan
+      : linkedAccount?.subscription?.membershipPlan;
+
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET as string,
@@ -63,8 +96,9 @@ export const login = async (
         expiresIn: "1h",
       }
     );
+    console.log("plan: ", plan);
     // localStorage.setItem('token', token);
-    res.status(200).json({ token, user });
+    res.status(200).json({ token, user, membershipPlan: plan });
   } catch (error) {
     next(error);
   }
