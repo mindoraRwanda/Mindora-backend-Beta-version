@@ -55,6 +55,13 @@ import membershipPlanRoutes from "./routes/membershipPlanRoutes";
 import subscriptionsRoutes from "./routes/subscriptionsRoutes";
 import subscriptionChangesRoutes from "./routes/subscriptionChangesRoutes";
 import subscriptionLinkedAccountsRoutes from "./routes/subscriptionLinkedAccountsRoutes";
+import invoiceRoutes from "./routes/invoicesRoutes";
+import insuranceRoutes from "./routes/insuranceRoutes";
+import paymentRoutes from "./routes/paymentsRoutes";
+import serviceRoutes from "./routes/serviceRoutes";
+import insuranceServiceCoverageRoutes from "./routes/insuranceServiceCoverageRoutes";
+import patientInsuranceRoutes from "./routes/patientInsuranceRoutes";
+import billingReportRoutes from "./routes/billingReportRoutes";
 
 dotenv.config();
 
@@ -112,6 +119,13 @@ app.use("/api", membershipPlanRoutes);
 app.use("/api", subscriptionsRoutes);
 app.use("/api", subscriptionChangesRoutes);
 app.use("/api", subscriptionLinkedAccountsRoutes);
+app.use("/api", invoiceRoutes);
+app.use("/api", insuranceRoutes);
+app.use("/api", paymentRoutes);
+app.use("/api", serviceRoutes);
+app.use("/api", insuranceServiceCoverageRoutes);
+app.use("/api", patientInsuranceRoutes);
+app.use("/api", billingReportRoutes);
 
 // this should the last one
 app.use(errorHandler);

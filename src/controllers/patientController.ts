@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Patient from "../database/models/patient";
 import User from "../database/models/user";
 import { error } from "console";
+import Insurance from "../database/models/insurance";
 
 // Create a new Patient
 export const createPatient = async (
@@ -46,10 +47,16 @@ export const getPatientById = async (
       res.status(400).json({ message: "Missing parameter(s)!" });
     }
     const patient = await Patient.findByPk(id, {
-      include: {
-        model: User,
-        as: "user",
-      },
+      include: [
+        {
+          model: User,
+          as: "user",
+        },
+        {
+          model: Insurance,
+          as: "insurances",
+        },
+      ],
     });
 
     if (!patient) {
