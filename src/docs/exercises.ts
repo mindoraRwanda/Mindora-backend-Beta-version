@@ -7,7 +7,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -28,6 +28,10 @@
  *               category:
  *                 type: string
  *                 description: The category of the exercise (e.g., "Cardio", "Strength")
+ *               picture:
+ *                 type: string
+ *                 format: binary
+ *                 description: The picture describing the exercise
  *     responses:
  *       201:
  *         description: Exercise created successfully
@@ -106,7 +110,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -122,6 +126,10 @@
  *               category:
  *                 type: string
  *                 description: The category of the exercise (e.g., "Cardio", "Strength")
+ *               picture:
+ *                 type: string
+ *                 format: binary
+ *                 description: The picture describing the exercise
  *     responses:
  *       200:
  *         description: Exercise updated successfully
@@ -183,6 +191,9 @@
  *         category:
  *           type: string
  *           description: The category of the exercise (e.g., "Cardio", "Strength")
+ *         picture:
+ *           type: string
+ *           description: The picture describing the exercise
  *         createdAt:
  *           type: string
  *           format: date-time

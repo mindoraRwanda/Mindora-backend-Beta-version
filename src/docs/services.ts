@@ -7,7 +7,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -23,6 +23,10 @@
  *               price:
  *                 type: number
  *                 description: The price of the service
+ *               picture:
+ *                 type: string
+ *                 format: binary
+ *                 description: The url or path to the image describing the service
  *     responses:
  *       201:
  *         description: Service created successfully
@@ -99,7 +103,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -112,6 +116,10 @@
  *               price:
  *                 type: number
  *                 description: The price of the service
+ *               picture:
+ *                 type: string
+ *                 format: binary
+ *                 description: The url or path to the image describing the service
  *     responses:
  *       200:
  *         description: Service updated successfully
@@ -170,6 +178,9 @@
  *         price:
  *           type: number
  *           description: The price of the service
+ *         picture:
+ *           type: string
+ *           description: The picture describing the service
  *         createdAt:
  *           type: string
  *           format: date-time

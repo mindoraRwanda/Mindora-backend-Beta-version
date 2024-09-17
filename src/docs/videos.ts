@@ -34,6 +34,10 @@
  *               category:
  *                 type: string
  *                 description: The category of the video
+ *               thumbnail:
+ *                 type: string
+ *                 format: binary
+ *                 description: The path or url to picture describing the video
  *               file:
  *                 type: string
  *                 format: binary
@@ -142,6 +146,10 @@
  *               category:
  *                 type: string
  *                 description: The category of the video
+ *               thumbnail:
+ *                 type: string
+ *                 format: binary
+ *                 description: The path or url to picture describing the video
  *               file:
  *                 type: string
  *                 format: binary
@@ -217,6 +225,9 @@
  *           type: string
  *           format: date
  *           description: The date when the video was published
+ *         thumbnail:
+ *           type: string
+ *           description: The path to video thumbnail
  *         createdAt:
  *           type: string
  *           format: date-time

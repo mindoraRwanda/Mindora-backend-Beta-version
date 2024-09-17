@@ -11,7 +11,10 @@ export const createArticle = async (
 ) => {
   try {
     const { courseId, title, author, category, publishedDate } = req.body;
-    const file = req.file;
+    const { file, picture } = req.files as {
+      file: Express.Multer.File[];
+      picture: Express.Multer.File[];
+    };
 
     // Check parameter(s)
     if (
@@ -31,7 +34,8 @@ export const createArticle = async (
       author,
       category,
       publishedDate,
-      url: file?.path, // Store the Cloudinary URL if uploaded
+      url: file?.[0].path,
+      picture: picture?.[0].path,
     });
 
     res.status(201).json(article);
@@ -48,7 +52,10 @@ export const updateArticle = async (
 ) => {
   try {
     const { id } = req.params;
-    const file = req.file;
+    const { file, picture } = req.files as {
+      file: Express.Multer.File[];
+      picture: Express.Multer.File[];
+    };
     const data = req.body;
     if (!id || !data) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
@@ -59,7 +66,12 @@ export const updateArticle = async (
       return res.status(404).json({ message: "Article not found." });
     }
 
-    await article.update({ ...data, url: file ? file.path : article.url });
+    await article.update({
+      ...data,
+      url: file && file.length > 0 ? file[0].path : article.url,
+      picture:
+        picture && picture.length > 0 ? picture[0].path : article.picture,
+    });
 
     res.status(200).json(article);
   } catch (error) {

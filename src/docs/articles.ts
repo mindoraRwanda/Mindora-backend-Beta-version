@@ -27,6 +27,10 @@
  *               author:
  *                 type: string
  *                 description: The author of the article
+ *               picture:
+ *                 type: string
+ *                 format: binary
+ *                 description: The cover image of the article
  *               category:
  *                 type: string
  *                 description: The category of the article
@@ -135,6 +139,10 @@
  *               author:
  *                 type: string
  *                 description: The author of the article
+ *               picture:
+ *                 type: string
+ *                 format: binary
+ *                 description: The cover image of the article
  *               publishedDate:
  *                 type: string
  *                 format: date
@@ -203,7 +211,10 @@
  *           description: The author of the article
  *         url:
  *           type: string
- *           description: The URL where the article image is stored (e.g., Cloudinary)
+ *           description: The URL where the article document is stored (e.g., Cloudinary)
+ *         picture:
+ *           type: string
+ *           description: The URL where the article cover image is stored (e.g., Cloudinary)
  *         publishedDate:
  *           type: string
  *           format: date

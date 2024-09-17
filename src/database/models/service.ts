@@ -6,6 +6,7 @@ interface ServiceAttributes {
   name: string;
   description?: string;
   price: number;
+  picture?: string;
 }
 
 interface ServiceCreationAttributes extends Optional<ServiceAttributes, "id"> {}
@@ -18,6 +19,7 @@ class Service
   public name!: string;
   public description?: string;
   public price!: number;
+  public picture?: string;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -43,6 +45,10 @@ Service.init(
     price: {
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    picture: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

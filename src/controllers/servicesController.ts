@@ -9,6 +9,7 @@ export const createService = async (
 ) => {
   try {
     const { name, description, price } = req.body;
+    const picture = req.file;
     if (!name || !price) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
@@ -16,6 +17,7 @@ export const createService = async (
       name,
       description,
       price,
+      picture: picture?.path,
     });
     res.status(201).json(service);
   } catch (error) {
@@ -67,6 +69,7 @@ export const updateService = async (
 ) => {
   try {
     const { id } = req.params;
+    const picture = req.file;
     const data = req.body;
 
     if (!id || !data) {
@@ -75,7 +78,10 @@ export const updateService = async (
 
     const service = await Service.findByPk(id);
     if (service) {
-      await service.update(data);
+      await service.update({
+        ...data,
+        picture: picture ? picture?.path : service.picture,
+      });
       res.status(200).json(service);
     } else {
       return res.status(404).json({ message: "Service not found" });

@@ -12,7 +12,10 @@ export const createVideo = async (
 ) => {
   try {
     const { courseId, title, description, publishedDate, category } = req.body;
-    const file = req.file; // Assumes video file upload
+    const { file, thumbnail } = req.files as {
+      file: Express.Multer.File[];
+      thumbnail: Express.Multer.File[];
+    };
 
     // Check required fields
     if (
@@ -21,12 +24,12 @@ export const createVideo = async (
       !description ||
       !publishedDate ||
       !category ||
-      !file
+      !file.length
     ) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
     // Extract the file path
-    const filePath = file.path;
+    const filePath = file?.[0].path;
 
     // Use fluent-ffmpeg to calculate video duration
     ffmpeg.ffprobe(filePath, async (err, metadata) => {
@@ -48,6 +51,7 @@ export const createVideo = async (
         category,
         url: filePath, // Store the Cloudinary URL or the uploaded path
         duration: durationInSeconds, // Automatically set the video duration
+        thumbnail: thumbnail?.[0].path,
       });
 
       return res.status(201).json(video);
@@ -65,7 +69,10 @@ export const updateVideo = async (
 ) => {
   try {
     const { id } = req.params;
-    const file = req.file;
+    const { file, thumbnail } = req.files as {
+      file: Express.Multer.File[];
+      thumbnail: Express.Multer.File[];
+    };
     const data = req.body;
 
     if (!id || !data) {
@@ -79,7 +86,11 @@ export const updateVideo = async (
     }
 
     // Update the video record
-    await video.update({ ...data, url: file ? file.path : video.url });
+    await video.update({
+      ...data,
+      url: file.length > 0 ? file[0].path : video.url,
+      thumbnail: thumbnail.length > 0 ? thumbnail[0].path : video.thumbnail,
+    });
 
     res.status(200).json(video);
   } catch (error) {

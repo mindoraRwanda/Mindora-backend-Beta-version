@@ -11,6 +11,7 @@ interface VideoAttributes {
   publishedDate: Date;
   category: string;
   duration: number; // duration in seconds
+  thumbnail?: string;
 }
 
 // Attributes required during creation (without id)
@@ -30,6 +31,7 @@ class Video
   public publishedDate!: Date;
   public category!: string;
   public duration!: number;
+  public thumbnail?: string | undefined;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -79,6 +81,10 @@ Video.init(
     },
     duration: {
       type: DataTypes.INTEGER, // duration in seconds
+      allowNull: true,
+    },
+    thumbnail: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
