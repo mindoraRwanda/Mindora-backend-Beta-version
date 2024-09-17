@@ -7,6 +7,7 @@ interface ExerciseAttributes {
   description: string;
   difficultyLevel: "Easy" | "Medium" | "Hard";
   category: string;
+  picture?: string;
 }
 
 interface ExerciseCreationAttributes
@@ -21,6 +22,7 @@ class Exercise
   public description!: string;
   public difficultyLevel!: "Easy" | "Medium" | "Hard";
   public category!: string;
+  public picture?: string | undefined;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -50,6 +52,10 @@ Exercise.init(
     category: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    picture: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

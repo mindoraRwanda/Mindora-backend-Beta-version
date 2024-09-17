@@ -44,6 +44,8 @@ import Insurance from "./insurance";
 import PatientInsurance from "./patientInsurance";
 import Service from "./service";
 import InsuranceServiceCoverage from "./insuranceServiceCoverage";
+import LanguageSupport from "./languageSupport";
+import Translation from "./translation";
 
 export const modelAssociation = async () => {
   // patient association
@@ -655,5 +657,14 @@ export const modelAssociation = async () => {
     through: InsuranceServiceCoverage,
     foreignKey: "serviceId",
     as: "insurances",
+  });
+
+  LanguageSupport.hasMany(Translation, {
+    as: "translations",
+    foreignKey: "languageId",
+  });
+  Translation.belongsTo(LanguageSupport, {
+    as: "language",
+    foreignKey: "languageId",
   });
 };

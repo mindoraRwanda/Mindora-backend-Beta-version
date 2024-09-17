@@ -10,6 +10,7 @@ export const createExercise = async (
 ) => {
   try {
     const { title, description, difficultyLevel, category } = req.body;
+    const picture = req.file;
 
     if (!title || !description || !difficultyLevel || !category) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
@@ -20,6 +21,7 @@ export const createExercise = async (
       description,
       difficultyLevel,
       category,
+      picture: picture?.path,
     });
 
     res.status(201).json(exercise);
@@ -83,6 +85,7 @@ export const updateExercise = async (
 ) => {
   try {
     const { id } = req.params;
+    const picture = req.file;
     const data = req.body;
 
     if (!id || !data) {
@@ -92,7 +95,10 @@ export const updateExercise = async (
     const exercise = await Exercise.findByPk(id);
 
     if (exercise) {
-      await exercise.update(data);
+      await exercise.update({
+        ...data,
+        picture: picture ? picture.path : exercise.picture,
+      });
       return res.status(200).json(exercise);
     } else {
       return res.status(404).json({ message: "Exercise not found" });

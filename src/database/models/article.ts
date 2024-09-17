@@ -10,6 +10,7 @@ interface ArticleAttributes {
   author: string;
   category: string;
   publishedDate: Date;
+  picture?: string;
 }
 
 // Attributes required during creation (without id)
@@ -27,6 +28,7 @@ class Article
   public author!: string;
   public category!: string;
   public publishedDate!: Date;
+  public picture?: string;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -70,6 +72,10 @@ Article.init(
     publishedDate: {
       type: DataTypes.DATEONLY,
       allowNull: false,
+    },
+    picture: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

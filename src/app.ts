@@ -62,6 +62,8 @@ import serviceRoutes from "./routes/serviceRoutes";
 import insuranceServiceCoverageRoutes from "./routes/insuranceServiceCoverageRoutes";
 import patientInsuranceRoutes from "./routes/patientInsuranceRoutes";
 import billingReportRoutes from "./routes/billingReportRoutes";
+import languageSupportRoutes from "./routes/languageSupportRoutes";
+import translationsRoutes from "./routes/translationRoutes";
 
 dotenv.config();
 
@@ -126,6 +128,8 @@ app.use("/api", serviceRoutes);
 app.use("/api", insuranceServiceCoverageRoutes);
 app.use("/api", patientInsuranceRoutes);
 app.use("/api", billingReportRoutes);
+app.use("/api", languageSupportRoutes);
+app.use("/api", translationsRoutes);
 
 // this should the last one
 app.use(errorHandler);
