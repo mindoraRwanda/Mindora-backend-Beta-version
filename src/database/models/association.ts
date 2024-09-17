@@ -38,6 +38,12 @@ import MembershipPlan from "./membershipPlan";
 import Subscription from "./subscription";
 import SubscriptionChange from "./subscriptionChange";
 import SubscriptionLinkedAccount from "./subscriptionLinkedAccount";
+import Invoice from "./invoice";
+import Payment from "./payment";
+import Insurance from "./insurance";
+import PatientInsurance from "./patientInsurance";
+import Service from "./service";
+import InsuranceServiceCoverage from "./insuranceServiceCoverage";
 
 export const modelAssociation = async () => {
   // patient association
@@ -588,5 +594,66 @@ export const modelAssociation = async () => {
   SubscriptionLinkedAccount.belongsTo(User, {
     as: "user",
     foreignKey: "userId",
+  });
+  // invoices
+  User.hasMany(Invoice, {
+    as: "invoices",
+    foreignKey: "userId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  Invoice.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
+  });
+  // Invoice has one Payment, and we alias it as 'payment'
+  Invoice.hasOne(Payment, {
+    as: "payment",
+    foreignKey: "invoiceId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
+  // Payment belongs to Invoice, and we alias it as 'invoice'
+  Payment.belongsTo(Invoice, {
+    as: "invoice",
+    foreignKey: "invoiceId",
+  });
+
+  User.hasMany(Payment, {
+    as: "payments",
+    foreignKey: "userId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  Payment.belongsTo(User, {
+    as: "user",
+    foreignKey: "userId",
+  });
+
+  // Define insurance associations with cascading deletes
+  Patient.belongsToMany(Insurance, {
+    through: PatientInsurance,
+    as: "insurances",
+    foreignKey: "patientId",
+    onDelete: "CASCADE",
+  });
+
+  Insurance.belongsToMany(Patient, {
+    through: PatientInsurance,
+    as: "patients",
+    foreignKey: "insuranceId",
+    onDelete: "CASCADE",
+  });
+  // insurance and services associations
+  Insurance.belongsToMany(Service, {
+    through: InsuranceServiceCoverage,
+    foreignKey: "insuranceId",
+    as: "services",
+  });
+  Service.belongsToMany(Insurance, {
+    through: InsuranceServiceCoverage,
+    foreignKey: "serviceId",
+    as: "insurances",
   });
 };
