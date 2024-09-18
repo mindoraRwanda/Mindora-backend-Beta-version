@@ -16,7 +16,7 @@
  *               - author
  *               - category
  *               - publishedDate
- *               - file
+ *               - content
  *             properties:
  *               courseId:
  *                 type: string
@@ -38,15 +38,14 @@
  *                 type: string
  *                 format: date
  *                 description: The date when the article was published
- *               file:
- *                 type: string
- *                 format: binary
- *                 description: The image file for the article
+ *               content:
+ *                 type: object
+ *                 description: The json object with structured contents for the article
  *     responses:
  *       201:
  *         description: Article created successfully
  *         content:
- *           application/json:
+ *           multipart/form-data:
  *             schema:
  *               $ref: '#/components/schemas/Article'
  *       400:
@@ -72,7 +71,7 @@
  *       200:
  *         description: A list of articles
  *         content:
- *           application/json:
+ *           multipart/form-data:
  *             schema:
  *               type: array
  *               items:
@@ -102,7 +101,7 @@
  *       200:
  *         description: Article retrieved successfully
  *         content:
- *           application/json:
+ *           multipart/form-data:
  *             schema:
  *               $ref: '#/components/schemas/Article'
  *       400:
@@ -147,15 +146,14 @@
  *                 type: string
  *                 format: date
  *                 description: The date when the article was published
- *               file:
- *                 type: string
- *                 format: binary
- *                 description: (Optional) The new image file for the article
+ *               content:
+ *                 type: object
+ *                 description: the structured content for the article
  *     responses:
  *       200:
  *         description: Article updated successfully
  *         content:
- *           application/json:
+ *           multipart/form-data:
  *             schema:
  *               $ref: '#/components/schemas/Article'
  *       400:
@@ -209,9 +207,9 @@
  *         author:
  *           type: string
  *           description: The author of the article
- *         url:
- *           type: string
- *           description: The URL where the article document is stored (e.g., Cloudinary)
+ *         content:
+ *           type: object
+ *           description: The structured content of the article
  *         picture:
  *           type: string
  *           description: The URL where the article cover image is stored (e.g., Cloudinary)
