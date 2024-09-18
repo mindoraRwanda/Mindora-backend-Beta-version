@@ -64,6 +64,7 @@ import patientInsuranceRoutes from "./routes/patientInsuranceRoutes";
 import billingReportRoutes from "./routes/billingReportRoutes";
 import languageSupportRoutes from "./routes/languageSupportRoutes";
 import translationsRoutes from "./routes/translationRoutes";
+import resourcesRoutes from "./routes/resourcesRoutes";
 
 dotenv.config();
 
@@ -130,6 +131,7 @@ app.use("/api", patientInsuranceRoutes);
 app.use("/api", billingReportRoutes);
 app.use("/api", languageSupportRoutes);
 app.use("/api", translationsRoutes);
+app.use("/api", resourcesRoutes);
 
 // this should the last one
 app.use(errorHandler);
