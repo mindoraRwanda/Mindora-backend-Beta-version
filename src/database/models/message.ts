@@ -7,6 +7,7 @@ interface MessageAttributes {
   senderId: string;
   receiverId: string;
   messageType: string;
+  isRead: boolean;
   messageText?: string;
   mediaUrl?: string;
   mediaSize?: number;
@@ -29,6 +30,7 @@ class Message
   public receiverId!: string;
   public messageType!: string;
   public messageText?: string;
+  public isRead!: boolean;
   public mediaUrl?: string;
   public mediaSize?: number;
   public mediaDuration?: number;
@@ -80,6 +82,11 @@ Message.init(
     messageText: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    isRead: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
     },
     mediaUrl: {
       type: DataTypes.STRING,
