@@ -6,7 +6,7 @@ interface ArticleAttributes {
   id: string;
   courseId: string;
   title: string;
-  url?: string;
+  content: object;
   author: string;
   category: string;
   publishedDate: Date;
@@ -24,7 +24,7 @@ class Article
   public id!: string;
   public courseId!: string;
   public title!: string;
-  public url?: string;
+  public content!: object;
   public author!: string;
   public category!: string;
   public publishedDate!: Date;
@@ -57,8 +57,8 @@ Article.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    url: {
-      type: DataTypes.STRING,
+    content: {
+      type: DataTypes.JSONB,
       allowNull: false,
     },
     author: {

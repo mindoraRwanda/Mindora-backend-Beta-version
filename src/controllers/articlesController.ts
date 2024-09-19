@@ -10,9 +10,9 @@ export const createArticle = async (
   next: NextFunction
 ) => {
   try {
-    const { courseId, title, author, category, publishedDate } = req.body;
-    const { file, picture } = req.files as {
-      file: Express.Multer.File[];
+    const { courseId, title, author, category, content, publishedDate } =
+      req.body;
+    const { picture } = req.files as {
       picture: Express.Multer.File[];
     };
 
@@ -23,7 +23,7 @@ export const createArticle = async (
       !author ||
       !category ||
       !publishedDate ||
-      !file
+      !content
     ) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
@@ -34,7 +34,7 @@ export const createArticle = async (
       author,
       category,
       publishedDate,
-      url: file?.[0].path,
+      content,
       picture: picture?.[0].path,
     });
 
@@ -52,8 +52,7 @@ export const updateArticle = async (
 ) => {
   try {
     const { id } = req.params;
-    const { file, picture } = req.files as {
-      file: Express.Multer.File[];
+    const { picture } = req.files as {
       picture: Express.Multer.File[];
     };
     const data = req.body;
@@ -68,7 +67,6 @@ export const updateArticle = async (
 
     await article.update({
       ...data,
-      url: file && file.length > 0 ? file[0].path : article.url,
       picture:
         picture && picture.length > 0 ? picture[0].path : article.picture,
     });
@@ -140,14 +138,6 @@ export const deleteArticle = async (
 
     if (!article) {
       return res.status(404).json({ message: "Article not found." });
-    }
-
-    if (article.url) {
-      // const publicId = article.url.split("/").pop()?.split(".")[0]; // Extract the public ID
-      // Parse the URL to extract the public ID
-      const parsedUrl = path.parse(article.url);
-      const publicId = parsedUrl.name; // Get the file name without the extension
-      await cloudinary.uploader.destroy(`uploads/${publicId}`); // Delete the file from Cloudinary
     }
 
     await article.destroy();
