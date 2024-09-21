@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import SupportCommunity from "../database/models/community";
 import User from "../database/models/user";
+import CommunityPost from "../database/models/communityPost";
 
 // Create a support community
 export const createSupportCommunity = async (
@@ -36,8 +37,57 @@ export const getSupportCommunities = async (
 ) => {
   try {
     const supportCommunities = await SupportCommunity.findAll({
-      include: { model: User, as: "moderator" },
+      include: [
+        { model: CommunityPost, as: "posts" },
+        {
+          model: User,
+          as: "members",
+          through: {
+            attributes: ["role", "status", "joinedAt"],
+          },
+          attributes: ["id", "firstName", "lastName", "username", "email"],
+        },
+      ],
     });
+    if (supportCommunities) {
+      return res.status(200).json(supportCommunities);
+    } else {
+      return res.status(404).json({ message: "Support communities not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get all support communities for a particular user, including all members of each community
+export const getUserSupportCommunities = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({ message: "Missing user ID parameter!" });
+    }
+
+    const supportCommunities = await User.findOne({
+      include: {
+        model: SupportCommunity,
+        as: "communities",
+        include: [
+          { model: CommunityPost, as: "posts" },
+          {
+            model: User,
+            as: "members",
+            attributes: { exclude: ["password"] },
+          },
+        ],
+      },
+      where: { id: userId },
+      attributes: { exclude: ["password"] },
+    });
+
     if (supportCommunities) {
       return res.status(200).json(supportCommunities);
     } else {
@@ -62,7 +112,17 @@ export const getSupportCommunityById = async (
     }
 
     const supportCommunity = await SupportCommunity.findByPk(id, {
-      include: { model: User, as: "moderator" },
+      include: [
+        {
+          model: User,
+          as: "members",
+          through: {
+            attributes: ["role", "status", "joinedAt"],
+          },
+          attributes: { exclude: ["password"] },
+        },
+        { model: CommunityPost, as: "posts" },
+      ],
     });
 
     if (supportCommunity) {
