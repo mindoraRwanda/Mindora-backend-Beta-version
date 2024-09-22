@@ -29,14 +29,30 @@ export const register = async (
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { firstName, lastName, email, password } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    username,
+    phoneNumber,
+    profileImage,
+  } = req.body;
   try {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const newUser = await User.create({ firstName, lastName, email, password });
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      username,
+      phoneNumber,
+      profileImage,
+    });
     const token = jwt.sign(
       { id: newUser.id, role: newUser.role },
       process.env.JWT_SECRET as string,

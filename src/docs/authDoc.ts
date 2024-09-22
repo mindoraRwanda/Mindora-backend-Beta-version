@@ -25,6 +25,15 @@
  *               email:
  *                 type: string
  *                 description: The user's email address
+ *               username:
+ *                 type: string
+ *                 description: The user's username
+ *               phoneNumber:
+ *                 type: string
+ *                 description: The user's phone number
+ *               profileImage:
+ *                 type: string
+ *                 description: The path to the user's profile picture
  *               password:
  *                 type: string
  *                 description: The user's password
