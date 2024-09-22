@@ -59,7 +59,19 @@ export const register = async (
       { expiresIn: "1h" }
     );
 
-    res.status(201).json({ token });
+    res.status(201).json({
+      user: {
+       id: newUser.id,
+       firstName: newUser.firstName,
+       lastName: newUser.lastName,
+       email: newUser.email,
+       username: newUser.username,
+       phoneNumber: newUser.phoneNumber,
+       profileImage: newUser.profileImage,
+       role: newUser.role,
+      },
+      token,
+     });
   } catch (error) {
     next(error);
   }
