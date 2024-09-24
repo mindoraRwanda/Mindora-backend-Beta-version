@@ -29,15 +29,9 @@ export const register = async (
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    username,
-    phoneNumber,
-    profileImage,
-  } = req.body;
+  const { firstName, lastName, email, password, username, phoneNumber } =
+    req.body;
+  const profile = req.file;
   try {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -51,7 +45,7 @@ export const register = async (
       password,
       username,
       phoneNumber,
-      profileImage,
+      profileImage: profile?.path,
     });
     const token = jwt.sign(
       { id: newUser.id, role: newUser.role },
