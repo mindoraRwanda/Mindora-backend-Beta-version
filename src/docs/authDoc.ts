@@ -7,7 +7,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -31,8 +31,9 @@
  *               phoneNumber:
  *                 type: string
  *                 description: The user's phone number
- *               profileImage:
+ *               profile:
  *                 type: string
+ *                 format: binary
  *                 description: The path to the user's profile picture
  *               password:
  *                 type: string

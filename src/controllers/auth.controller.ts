@@ -29,19 +29,22 @@ export const register = async (
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    username,
-    phoneNumber,
-    profileImage,
-  } = req.body;
+  const { firstName, lastName, email, password, username, phoneNumber } =
+    req.body;
+  const profile = req.file;
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { username }],
+      },
+    });
+
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      const errorMessage =
+        existingUser.email === email
+          ? "Email already exists"
+          : "Username already exists";
+      return res.status(400).json({ message: errorMessage });
     }
 
     const newUser = await User.create({
@@ -51,7 +54,7 @@ export const register = async (
       password,
       username,
       phoneNumber,
-      profileImage,
+      profileImage: profile?.path,
     });
     const token = jwt.sign(
       { id: newUser.id, role: newUser.role },
@@ -61,17 +64,17 @@ export const register = async (
 
     res.status(201).json({
       user: {
-       id: newUser.id,
-       firstName: newUser.firstName,
-       lastName: newUser.lastName,
-       email: newUser.email,
-       username: newUser.username,
-       phoneNumber: newUser.phoneNumber,
-       profileImage: newUser.profileImage,
-       role: newUser.role,
+        id: newUser.id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        username: newUser.username,
+        phoneNumber: newUser.phoneNumber,
+        profileImage: newUser.profileImage,
+        role: newUser.role,
       },
       token,
-     });
+    });
   } catch (error) {
     next(error);
   }
