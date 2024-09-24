@@ -16,8 +16,8 @@ const router = Router();
 
 router.post(
   "/register",
-  registerValidation,
   uploadProfilePic.single("profile"),
+  registerValidation,
   register
 );
 router.post("/login", loginValidation, login);

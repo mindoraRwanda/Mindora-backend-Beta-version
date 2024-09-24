@@ -33,9 +33,18 @@ export const register = async (
     req.body;
   const profile = req.file;
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { username }],
+      },
+    });
+
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      const errorMessage =
+        existingUser.email === email
+          ? "Email already exists"
+          : "Username already exists";
+      return res.status(400).json({ message: errorMessage });
     }
 
     const newUser = await User.create({
@@ -55,17 +64,17 @@ export const register = async (
 
     res.status(201).json({
       user: {
-       id: newUser.id,
-       firstName: newUser.firstName,
-       lastName: newUser.lastName,
-       email: newUser.email,
-       username: newUser.username,
-       phoneNumber: newUser.phoneNumber,
-       profileImage: newUser.profileImage,
-       role: newUser.role,
+        id: newUser.id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        username: newUser.username,
+        phoneNumber: newUser.phoneNumber,
+        profileImage: newUser.profileImage,
+        role: newUser.role,
       },
       token,
-     });
+    });
   } catch (error) {
     next(error);
   }
