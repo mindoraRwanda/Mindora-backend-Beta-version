@@ -162,6 +162,11 @@ export const requestPasswordReset = async (
     await user.save();
 
     // tests logs
+    return res.status(400).json({
+      email: process.env.EMAIL_USER || "The email variable not accessible",
+      password:
+        process.env.EMAIL_PASS || "The password variable not accessible",
+    });
     const password = process.env.EMAIL_PASS;
     const passwordLength = password?.length || 0;
     if (!password) {
