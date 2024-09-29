@@ -1,28 +1,32 @@
-import swaggerJSDoc, { Options } from 'swagger-jsdoc';
-import { OpenAPIV3 } from 'openapi-types';
+import swaggerJSDoc, { Options } from "swagger-jsdoc";
+import { OpenAPIV3 } from "openapi-types";
 
 const swaggerDefinition: OpenAPIV3.Document = {
-  openapi: '3.0.0',
+  openapi: "3.0.0",
   info: {
-    title: 'Mindora Backend',
-    version: '1.0.0',
+    title: "Mindora Backend",
+    version: "1.0.0",
   },
   servers: [
     {
-      url: 'http://localhost:8080',
-      description: 'Development server',
+      url: "http://localhost:8080",
+      description: "Development server",
     },
     {
-      url:'https://mindora-backend-beta-version.onrender.com',
-      description: 'Development server',
-    }
+      url: "https://mindora-backend-beta-version.onrender.com",
+      description: "Development server",
+    },
+    {
+      url: "https://mindora-backend-beta-version-289r.onrender.com",
+      description: "Development server",
+    },
   ],
   components: {
     securitySchemes: {
       bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT', 
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
       },
     },
   },
@@ -36,7 +40,7 @@ const swaggerDefinition: OpenAPIV3.Document = {
 
 const options: Options = {
   swaggerDefinition,
-  apis: ['./src/docs/*.ts'], 
+  apis: ["./src/docs/*.ts"],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
