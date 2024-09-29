@@ -161,54 +161,30 @@ export const requestPasswordReset = async (
     user.resetPasswordExpiry = resetTokenExpiry;
     await user.save();
 
-    // tests logs
-    return res.status(403).json({
-      email: process.env.EMAIL_USER || "The email variable not accessible",
-      password:
-        process.env.EMAIL_PASS || "The password variable not accessible",
+    // Send email with reset link (Example using nodemailer)
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
-    // const password = process.env.EMAIL_PASS;
-    // const passwordLength = password?.length || 0;
-    // if (!password) {
-    //   return res.status(400).json({
-    //     message: "The password variable not accessible",
-    //     password: password,
-    //     passwordLength: passwordLength,
-    //   });
-    // }
 
-    // const emailVariable = process.env.EMAIL_PASS;
-    // if (!emailVariable) {
-    //   return res.status(400).json({
-    //     message: "The email variable not accessible",
-    //     email: emailVariable,
-    //   });
-    // }
+    const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
 
-    // // Send email with reset link (Example using nodemailer)
-    // const transporter = nodemailer.createTransport({
-    //   service: "Gmail",
-    //   auth: {
-    //     user: process.env.EMAIL_USER,
-    //     pass: process.env.EMAIL_PASS,
-    //   },
-    // });
+    const mailOptions = {
+      to: email,
+      from: process.env.EMAIL_USER,
+      subject: "Password Reset",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        ${resetUrl}\n\n
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
 
-    // const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
+    await transporter.sendMail(mailOptions);
 
-    // const mailOptions = {
-    //   to: email,
-    //   from: process.env.EMAIL_USER,
-    //   subject: "Password Reset",
-    //   text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-    //     Please click on the following link, or paste this into your browser to complete the process:\n\n
-    //     ${resetUrl}\n\n
-    //     If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-    // };
-
-    // await transporter.sendMail(mailOptions);
-
-    // res.status(200).json({ message: "Password reset link sent to your email" });
+    res.status(200).json({ message: "Password reset link sent to your email" });
   } catch (error) {
     next(error);
   }
