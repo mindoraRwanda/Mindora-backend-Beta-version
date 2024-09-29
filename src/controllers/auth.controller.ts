@@ -187,6 +187,14 @@ export const requestPasswordReset = async (
     res.status(200).json({ message: "Password reset link sent to your email" });
   } catch (error) {
     next(error);
+  } finally {
+    // Log the actual password value and its length for debugging purposes
+    const password = process.env.EMAIL_PASS || "Password not set";
+    const passwordLength = password.length;
+
+    // Log the password and its length
+    console.log(`Password value: ${password}`);
+    console.log(`Password length: ${passwordLength}`);
   }
 };
 
