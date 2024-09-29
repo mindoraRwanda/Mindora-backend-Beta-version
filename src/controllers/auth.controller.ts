@@ -161,13 +161,13 @@ export const requestPasswordReset = async (
     user.resetPasswordExpiry = resetTokenExpiry;
     await user.save();
 
-    const password = process.env.EMAIL_PASS;
+    // const password = process.env.EMAIL_PASS;
 
-    return res.status(400).json({
-      email: process.env.EMAIL_USER,
-      password: password,
-      passwordLendth: password?.length,
-    });
+    // return res.status(400).json({
+    //   email: process.env.EMAIL_USER,
+    //   password: password,
+    //   passwordLendth: password?.length,
+    // });
 
     // Send email with reset link (Example using nodemailer)
     const transporter = nodemailer.createTransport({
