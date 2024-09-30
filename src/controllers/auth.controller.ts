@@ -177,7 +177,7 @@ export const requestPasswordReset = async (
         pass: process.env.EMAIL_PASS?.trim(),
       },
     });
-    return res.status(401).json(transporter.options);
+    // return res.status(401).json(transporter.options);
 
     const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
 
@@ -192,10 +192,17 @@ export const requestPasswordReset = async (
     };
     console.log("-------------------------------------------------------");
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log("Result: ", result);
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (!err) {
+        return res
+          .status(200)
+          .json({ message: "Password reset link sent to your email" });
+      } else {
+        return res.status(500).json({ message: err });
+      }
+    });
 
-    res.status(200).json({ message: "Password reset link sent to your email" });
+    // res.status(200).json({ message: "Password reset link sent to your email" });
   } catch (error) {
     next(error);
   }
