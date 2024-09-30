@@ -161,14 +161,6 @@ export const requestPasswordReset = async (
     user.resetPasswordExpiry = resetTokenExpiry;
     await user.save();
 
-    // const password = process.env.EMAIL_PASS?.trim();
-
-    // return res.status(400).json({
-    //   email: process.env.EMAIL_USER?.trim(),
-    //   password: password,
-    //   passwordLendth: password?.length,
-    // });
-
     // Send email with reset link (Example using nodemailer)
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -177,7 +169,6 @@ export const requestPasswordReset = async (
         pass: process.env.EMAIL_PASS?.trim(),
       },
     });
-    // return res.status(401).json(transporter.options);
 
     const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
 
@@ -190,19 +181,10 @@ export const requestPasswordReset = async (
         ${resetUrl}\n\n
         If you did not request this, please ignore this email and your password will remain unchanged.\n`,
     };
-    console.log("-------------------------------------------------------");
 
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (!err) {
-        return res
-          .status(200)
-          .json({ message: "Password reset link sent to your email" });
-      } else {
-        return res.status(500).json({ message: err });
-      }
-    });
+    await transporter.sendMail(mailOptions);
 
-    // res.status(200).json({ message: "Password reset link sent to your email" });
+    res.status(200).json({ message: "Password reset link sent to your email" });
   } catch (error) {
     next(error);
   }

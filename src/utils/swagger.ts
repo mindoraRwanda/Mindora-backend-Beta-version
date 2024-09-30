@@ -13,14 +13,6 @@ const swaggerDefinition: OpenAPIV3.Document = {
       description: "Development server",
     },
     {
-      url: "https://mindora-backend-beta-version.onrender.com",
-      description: "Development server",
-    },
-    {
-      url: "https://mindora-backend-beta-version-289r.onrender.com",
-      description: "Development server",
-    },
-    {
       url: "https://mindora-backend-beta-version-m0bk.onrender.com",
       description: "Development server",
     },
