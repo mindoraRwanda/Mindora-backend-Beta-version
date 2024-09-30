@@ -161,28 +161,28 @@ export const requestPasswordReset = async (
     user.resetPasswordExpiry = resetTokenExpiry;
     await user.save();
 
-    const password = process.env.EMAIL_PASS?.trim();
+    // const password = process.env.EMAIL_PASS?.trim();
 
-    return res.status(400).json({
-      email: process.env.EMAIL_USER?.trim(),
-      password: password,
-      passwordLendth: password?.length,
-    });
+    // return res.status(400).json({
+    //   email: process.env.EMAIL_USER?.trim(),
+    //   password: password,
+    //   passwordLendth: password?.length,
+    // });
 
     // Send email with reset link (Example using nodemailer)
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER?.trim(),
+        pass: process.env.EMAIL_PASS?.trim(),
       },
     });
 
     const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
 
     const mailOptions = {
-      to: email,
-      from: process.env.EMAIL_USER,
+      to: email.trim(),
+      from: process.env.EMAIL_USER?.trim(),
       subject: "Password Reset",
       text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
