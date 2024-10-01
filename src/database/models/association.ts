@@ -47,6 +47,7 @@ import InsuranceServiceCoverage from "./insuranceServiceCoverage";
 import LanguageSupport from "./languageSupport";
 import Translation from "./translation";
 import UserCommunity from "./userCommunity";
+import UserPreferences from "./userPreferences";
 
 export const modelAssociation = async () => {
   // patient association
@@ -680,5 +681,10 @@ export const modelAssociation = async () => {
     through: UserCommunity,
     as: "members",
     foreignKey: "communityId",
+  });
+  // user preferences
+  User.hasOne(UserPreferences, {
+    as: "preferences",
+    foreignKey: "userId",
   });
 };
