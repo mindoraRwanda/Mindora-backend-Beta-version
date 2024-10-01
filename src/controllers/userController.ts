@@ -3,6 +3,7 @@ import User, { UserAttributes } from "../database/models/user";
 import { Request, Response, NextFunction } from "express";
 import Patient from "../database/models/patient";
 import Therapist from "../database/models/therapist";
+import { validationResult } from "express-validator";
 
 // Create a new user
 export const createUser = async (
@@ -119,7 +120,7 @@ export const deleteUser = async (
   }
 };
 
-export const uploadProfile = async (
+export const updateProfile = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -131,7 +132,7 @@ export const uploadProfile = async (
       return res.status(400).json({ message: "No picture uploaded." });
     }
     if (!userId) {
-      return res.status(400).json({ message: "User id is missing" });
+      return res.status(400).json({ message: "User ID is missing" });
     }
     const user = await User.findByPk(userId);
     if (!user) {
@@ -141,5 +142,44 @@ export const uploadProfile = async (
     return res.status(200).json(user);
   } catch (error) {
     next(error);
+  }
+};
+
+export const changePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { userId } = req.params;
+    const { oldPassword, newPassword } = req.body;
+    if (!userId || !oldPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Missing required parameter(s)!" });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: `User with ID: ${userId} not found` });
+    }
+    if (!(await user.validatePassword(oldPassword))) {
+      return res.status(403).json({ message: "Invalid old password!" });
+    }
+    if (await user.validatePassword(newPassword)) {
+      return res.status(403).json({
+        message: "The new password must be different from old password!",
+      });
+    }
+    await user.update({ password: newPassword });
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (err) {
+    next(err);
   }
 };

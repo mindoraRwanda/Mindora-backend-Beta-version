@@ -3,8 +3,7 @@
  * /api/upload/{userId}:
  *   post:
  *     summary: Upload a profile picture for a user
- *     tags:
- *       - User
+ *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: userId

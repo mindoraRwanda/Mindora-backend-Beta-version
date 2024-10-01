@@ -5,9 +5,11 @@ import {
   getAllUsers,
   getUserById,
   deleteUser,
-  uploadProfile,
+  updateProfile,
 } from "../controllers/userController";
 import { uploadProfilePic } from "../config/multerConfig";
+import { changePasswordValidation } from "../middleware/validation.middleware";
+import { changePassword } from "../controllers/userController";
 
 const router = Router();
 
@@ -19,7 +21,12 @@ router.delete("/users/:id", deleteUser);
 router.post(
   "/upload/:userId",
   uploadProfilePic.single("profile"),
-  uploadProfile
+  updateProfile
+);
+router.post(
+  "/users/:userId/change_password",
+  changePasswordValidation,
+  changePassword
 );
 
 export default router;
