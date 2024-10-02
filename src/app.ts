@@ -66,6 +66,7 @@ import languageSupportRoutes from "./routes/languageSupportRoutes";
 import translationsRoutes from "./routes/translationRoutes";
 import resourcesRoutes from "./routes/resourcesRoutes";
 import userCommunityRoutes from "./routes/userCommunityRoutes";
+import userPreferenceRoutes from "./routes/userPreferencesRoutes";
 
 dotenv.config();
 
@@ -134,6 +135,7 @@ app.use("/api", languageSupportRoutes);
 app.use("/api", translationsRoutes);
 app.use("/api", resourcesRoutes);
 app.use("/api", userCommunityRoutes);
+app.use("/api", userPreferenceRoutes);
 
 // this should the last one
 app.use(errorHandler);
