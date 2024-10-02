@@ -9,6 +9,7 @@ import nodemailer from "nodemailer";
 import Subscription from "../database/models/subscription";
 import MembershipPlan from "../database/models/membershipPlan";
 import SubscriptionLinkedAccount from "../database/models/subscriptionLinkedAccount";
+import UserPreferences from "../database/models/userPreferences";
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ export const register = async (
       phoneNumber,
       profileImage: profile?.path,
     });
+    const preferences = await UserPreferences.create({ userId: newUser.id });
     const token = jwt.sign(
       { id: newUser.id, role: newUser.role },
       process.env.JWT_SECRET as string,
@@ -72,6 +74,7 @@ export const register = async (
         phoneNumber: newUser.phoneNumber,
         profileImage: newUser.profileImage,
         role: newUser.role,
+        preferences,
       },
       token,
     });
@@ -92,7 +95,10 @@ export const login = async (
 
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: { model: UserPreferences, as: "preferences" },
+    });
 
     if (!user || !(await user.validatePassword(password))) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -170,7 +176,7 @@ export const requestPasswordReset = async (
       },
     });
 
-    const resetUrl = `https://mindora-backend-beta-version-m0bk.onrender.com/api/reset_password/${resetToken}`;
+    const resetUrl = `https://mindora-backend-beta-version-m0bk.onrender.com/api/auth/reset_password/${resetToken}`;
 
     const mailOptions = {
       to: email.trim(),
