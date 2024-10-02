@@ -22,7 +22,10 @@ interface UserPreferencesAttributes {
 }
 
 interface UserPreferencesCreationAttributes
-  extends Optional<UserPreferencesAttributes, "id"> {}
+  extends Optional<
+    UserPreferencesAttributes,
+    "id" | "communicationMethods" | "notificationSettings" | "preferredLanguage"
+  > {}
 
 class UserPreferences
   extends Model<UserPreferencesAttributes, UserPreferencesCreationAttributes>
