@@ -170,7 +170,7 @@ export const requestPasswordReset = async (
       },
     });
 
-    const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
+    const resetUrl = `https://mindora-backend-beta-version-m0bk.onrender.com/api/reset_password/${resetToken}`;
 
     const mailOptions = {
       to: email.trim(),
@@ -201,7 +201,11 @@ export const resetPassword = async (
     return res.status(400).json({ errors: errors.array() });
   }
   const { token } = req.params;
-  const { password } = req.body;
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
 
   try {
     const user = await User.findOne({

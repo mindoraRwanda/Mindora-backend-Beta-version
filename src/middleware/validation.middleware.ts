@@ -34,6 +34,7 @@ export const forgotPasswordValidation: ValidationChain[] = [
 // Define validation rules for passwords
 export const resetPasswordValidation: ValidationChain[] = [
   validatePassword("password"),
+  validatePassword("confirmPassword"),
 ];
 // Define validation rules for change password
 export const changePasswordValidation: ValidationChain[] = [

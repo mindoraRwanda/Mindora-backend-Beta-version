@@ -145,10 +145,14 @@
  *             type: object
  *             required:
  *               - password
+ *               - confirm password
  *             properties:
  *               password:
  *                 type: string
  *                 description: The new password to be set
+ *               confirmPassword:
+ *                 type: string
+ *                 description: confirm the new password to be set
  *     responses:
  *       200:
  *         description: Password reset successfully
