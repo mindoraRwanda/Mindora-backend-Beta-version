@@ -170,7 +170,7 @@ export const requestPasswordReset = async (
       },
     });
 
-    const resetUrl = `http://localhost:8080/api/reset_password/${resetToken}`;
+    const resetUrl = `https://mindora-backend-beta-version-m0bk.onrender.com/api/reset_password/${resetToken}`;
 
     const mailOptions = {
       to: email.trim(),
