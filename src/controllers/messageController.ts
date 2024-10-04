@@ -1,45 +1,89 @@
 import { Request, Response, NextFunction } from "express";
-import Message from "../database/models/message";
+import Message, { MessageAttributes } from "../database/models/message";
 import User from "../database/models/user";
+import ffmpeg from "fluent-ffmpeg";
 
-// create message
+// Function to get media duration
+const getMediaDuration = (filePath: string) => {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, metadata) => {
+      if (err) return reject(err);
+      const duration = metadata.format.duration
+        ? Math.round(metadata.format.duration)
+        : 0; // duration in seconds
+      resolve(duration);
+    });
+  });
+};
+
+// Helper function to determine message type from MIME type
+const determineMessageType = (mimeType: string) => {
+  if (mimeType.startsWith("image/")) return "image";
+  if (mimeType.startsWith("audio/")) return "audio";
+  if (mimeType.startsWith("video/")) return "video";
+
+  // Handle different document types
+  const documentTypes = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation", // PPTX
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+  ];
+
+  if (documentTypes.includes(mimeType)) return "document";
+
+  return "unknown file type";
+};
+
+// Create message with multiple file uploads
 export const createMessage = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const {
-      chatId,
-      senderId,
-      receiverId,
-      messageType,
-      messageText,
-      isRead,
-      mediaUrl,
-      mediaSize,
-      mediaDuration,
-    } = req.body;
+    const files = req.files as Express.Multer.File[];
 
-    if (!chatId || !senderId || !receiverId || !messageType) {
-      return res.status(400).json({ message: "Missing required parameters!" });
+    if (!files || files.length === 0) {
+      return res.status(400).json({ message: "No file(s) uploaded!" });
     }
 
-    const message = await Message.create({
-      chatId,
-      senderId,
-      receiverId,
-      messageType,
-      messageText,
-      isRead: isRead || false,
-      mediaUrl,
-      mediaSize,
-      mediaDuration,
-    });
+    const uploadedFiles = await Promise.all(
+      files.map(async (file) => {
+        // Determine the message type from the MIME type of the uploaded file
+        const messageType = determineMessageType(file.mimetype);
+        const mediaSize = file.size;
+        const mediaUrl = file.path;
 
-    res.status(201).json(message);
+        let mediaDuration = null;
+        if (messageType === "audio" || messageType === "video") {
+          mediaDuration = await getMediaDuration(file.path); // Use ffmpeg to get duration if it's media
+        }
+
+        return { messageType, mediaUrl, mediaSize, mediaDuration };
+      })
+    );
+
+    res.status(200).json({ files: uploadedFiles });
   } catch (error) {
     next(error);
+  }
+};
+
+export const saveMessage = async (message: MessageAttributes) => {
+  try {
+    if (!message.chatId || !message.receiverId || !message.senderId) {
+      throw new Error("Missing required parameter(s)!");
+    }
+
+    const msg = await Message.create(message);
+    return msg;
+  } catch (err: any) {
+    console.error("Error saving message:", err.message);
+    throw new Error(`Failed to save message: ${err.message}`);
   }
 };
 

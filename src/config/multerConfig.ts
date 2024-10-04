@@ -69,7 +69,7 @@ const generalFileFilter = (
   cb: FileFilterCallback
 ) => {
   const allowedTypes =
-    /jpeg|jpg|png|gif|pdf|doc|docx|mp4|avi|mkv|mp3|mpeg|wav|aac|ogg/;
+    /jpeg|jpg|png|gif|pdf|doc|docx|mp4|avi|mkv|mp3|mpeg|wav|aac|ogg|m4a/;
   const extname = allowedTypes.test(
     path.extname(file.originalname).toLowerCase()
   );

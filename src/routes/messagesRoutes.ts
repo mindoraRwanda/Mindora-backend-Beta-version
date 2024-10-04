@@ -7,10 +7,11 @@ import {
   deleteMessage,
   getMessagesByChatId,
 } from "../controllers/messageController";
+import { uploadGeneral } from "../config/multerConfig";
 
 const router = Router();
 
-router.post("/messages", createMessage);
+router.post("/messages", uploadGeneral.array("attachments"), createMessage);
 router.get("/messages", getMessages);
 router.get("/messages/:id", getMessageById);
 router.put("/messages/:id", updateMessage);

@@ -1,4 +1,5 @@
 import { io } from "../app";
+import { saveMessage } from "../controllers/messageController";
 import Message from "../database/models/message";
 
 let onlineUsers: Array<any> = [];
@@ -33,16 +34,18 @@ io.on("connection", (socket) => {
     io.emit("getOnlineUsers", onlineUsers);
   });
 
-  socket.on("sendMessage", (message) => {
+  socket.on("sendMessage", async (message) => {
     const user = onlineUsers.find((user) => user.userId === message.receiverId);
-    // send private message
+    // save message to database
+    const msg = await saveMessage(message);
+    // send private message if user is online
     if (user) {
-      io.to(user.socketId).emit("getMessage", message);
+      io.to(user.socketId).emit("getMessage", msg);
       // send message notification
       io.to(user.socketId).emit("getNotification", {
-        senderId: message.senderId,
+        senderId: msg.senderId,
         isRead: false,
-        date: new Date(),
+        date: msg.createdAt,
       });
     }
   });

@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../../db";
 
-interface MessageAttributes {
+export interface MessageAttributes {
   id: string;
   chatId: string;
   senderId: string;

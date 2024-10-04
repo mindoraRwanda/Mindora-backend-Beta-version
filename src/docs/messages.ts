@@ -2,53 +2,48 @@
  * @swagger
  * /api/messages:
  *   post:
- *     summary: Create a new message
+ *     summary: Upload message attachments and create messages
  *     tags: [Messages]
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             required:
- *               - chatId
- *               - senderId
- *               - receiverId
- *               - messageType
  *             properties:
- *               chatId:
- *                 type: string
- *                 description: The ID of the chat
- *               senderId:
- *                 type: string
- *                 description: The ID of the sender
- *               receiverId:
- *                 type: string
- *                 description: The ID of the receiver
- *               messageType:
- *                 type: string
- *                 description: The type of the message (e.g., text, image, video)
- *               messageText:
- *                 type: string
- *                 description: The content of the message (optional)
- *               mediaUrl:
- *                 type: string
- *                 description: The URL of the media file (optional)
- *               mediaSize:
- *                 type: integer
- *                 description: The size of the media file in bytes (optional)
- *               mediaDuration:
- *                 type: integer
- *                 description: The duration of the media file in seconds (optional)
+ *               attachments:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Array of media files (image, audio, video, or document)
  *     responses:
- *       201:
- *         description: Message created successfully
+ *       200:
+ *         description: Media files uploaded and message types determined successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Message'
+ *               type: object
+ *               properties:
+ *                 files:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       messageType:
+ *                         type: string
+ *                         description: The type of the message (e.g., image, audio, video, document)
+ *                       mediaUrl:
+ *                         type: string
+ *                         description: The URL/path of the uploaded media file
+ *                       mediaSize:
+ *                         type: integer
+ *                         description: The size of the media file in bytes
+ *                       mediaDuration:
+ *                         type: integer
+ *                         description: The duration of the media file in seconds (optional, only for audio/video)
  *       400:
- *         description: Missing required parameters!
+ *         description: No files uploaded or missing required parameters
  *       500:
  *         description: Internal server error
  */
