@@ -80,6 +80,66 @@
 
 /**
  * @swagger
+ * /api/therapists/{therapistId}/appointments:
+ *   get:
+ *     summary: Get all appointments for a specific therapist
+ *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: therapistId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the therapist
+ *     responses:
+ *       200:
+ *         description: Appointments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Appointment'
+ *       400:
+ *         description: Missing therapist ID parameter(s)
+ *       404:
+ *         description: Appointments not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/patients/{patientId}/appointments:
+ *   get:
+ *     summary: Get all appointments for a specific patient
+ *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: patientId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the patient
+ *     responses:
+ *       200:
+ *         description: Appointments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Appointment'
+ *       400:
+ *         description: Missing patient ID parameter(s)
+ *       404:
+ *         description: Appointments not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /api/appointments/{id}:
  *   get:
  *     summary: Get an appointment by ID

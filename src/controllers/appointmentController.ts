@@ -95,6 +95,66 @@ export const getAppointmentById = async (
   }
 };
 
+// Get all appointments for particular therapist
+export const getTherapistAppointments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { therapistId } = req.params;
+    if (!therapistId) {
+      return res
+        .status(400)
+        .json({ message: "Missing therapist ID parameter(s)!" });
+    }
+    const appointments = await Appointment.findOne({
+      where: { therapistId },
+      include: [
+        { model: Therapist, as: "therapist" },
+        { model: Patient, as: "patient" },
+      ],
+    });
+    if (appointments) {
+      return res.status(200).json(appointments);
+    } else {
+      return res.status(404).json({ message: "Appointments not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get all appointments for particular patient
+export const getPatientAppointments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { patientId } = req.params;
+    if (!patientId) {
+      return res
+        .status(400)
+        .json({ message: "Missing patient ID parameter(s)!" });
+    }
+    const appointments = await Appointment.findOne({
+      where: { patientId },
+      include: [
+        { model: Therapist, as: "therapist" },
+        { model: Patient, as: "patient" },
+      ],
+    });
+    if (appointments) {
+      return res.status(200).json(appointments);
+    } else {
+      return res.status(404).json({ message: "Appointments not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Update an appointment
 export const updateAppointment = async (
   req: Request,
