@@ -55,6 +55,8 @@ MedicationPrescription.init(
         model: "patients",
         key: "id",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     therapistId: {
       type: DataTypes.UUID,
@@ -63,6 +65,8 @@ MedicationPrescription.init(
         model: "therapists",
         key: "id",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     medicationId: {
       type: DataTypes.UUID,
@@ -71,6 +75,8 @@ MedicationPrescription.init(
         model: "medications",
         key: "id",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     dosage: {
       type: DataTypes.STRING,

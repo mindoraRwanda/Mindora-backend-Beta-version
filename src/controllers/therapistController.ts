@@ -10,9 +10,9 @@ export const createTherapist = async (
 ) => {
   try {
     const { personalInformation, diploma, licence, userId } = req.body;
-    return res
-      .status(200)
-      .json({ message: { personalInformation, diploma, licence, userId } });
+    // return res
+    //   .status(200)
+    //   .json({ message: { personalInformation, diploma, licence, userId } });
     if (!personalInformation || !diploma || !licence || !userId) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
@@ -23,6 +23,12 @@ export const createTherapist = async (
       licence,
       userId,
     });
+
+    const user = await User.findByPk(userId);
+
+    if (therapist && user) {
+      await user.update({ role: "therapy" });
+    }
 
     return res.status(201).json(therapist);
   } catch (error) {
