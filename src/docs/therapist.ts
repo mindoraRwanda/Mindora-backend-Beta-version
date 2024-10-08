@@ -7,13 +7,13 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
  *               - personalInformation
  *               - diploma
- *               - licence
+ *               - license
  *               - userId
  *             properties:
  *               personalInformation:
@@ -38,10 +38,12 @@
  *                     description: The phone number of the therapist
  *               diploma:
  *                 type: string
- *                 description: Diploma or degree obtained by the therapist
- *               licence:
+ *                 format: binary
+ *                 description: Diploma file (document) of the therapist
+ *               license:
  *                 type: string
- *                 description: Licence number of the therapist
+ *                 format: binary
+ *                 description: License file (document) of the therapist
  *               userId:
  *                 type: string
  *                 format: uuid
@@ -124,7 +126,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -150,10 +152,12 @@
  *                     description: The phone number of the therapist
  *               diploma:
  *                 type: string
- *                 description: Diploma or degree obtained by the therapist (optional)
- *               licence:
+ *                 format: binary
+ *                 description: Updated diploma file (optional)
+ *               license:
  *                 type: string
- *                 description: Licence number of the therapist (optional)
+ *                 format: binary
+ *                 description: Updated license file (optional)
  *     responses:
  *       200:
  *         description: Therapist updated successfully
@@ -226,9 +230,9 @@
  *         diploma:
  *           type: string
  *           description: Diploma or degree obtained by the therapist
- *         licence:
+ *         license:
  *           type: string
- *           description: Licence number of the therapist
+ *           description: License number of the therapist
  *         userId:
  *           type: string
  *           format: uuid

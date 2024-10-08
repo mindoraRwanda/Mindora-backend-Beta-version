@@ -9,30 +9,40 @@ export const createTherapist = async (
   next: NextFunction
 ) => {
   try {
-    const { personalInformation, diploma, licence, userId } = req.body;
-    // return res
-    //   .status(200)
-    //   .json({ message: { personalInformation, diploma, licence, userId } });
-    if (!personalInformation || !diploma || !licence || !userId) {
+    const { personalInformation, userId } = req.body;
+    const { diploma, license } = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+
+    if (
+      !personalInformation ||
+      !diploma ||
+      !diploma.length ||
+      !license ||
+      !license.length ||
+      !userId
+    ) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
+    // Create therapist
     const therapist = await Therapist.create({
       personalInformation,
-      diploma,
-      licence,
+      diploma: diploma[0].path,
+      license: license[0].path,
       userId,
     });
 
+    // Find the user and update role
     const user = await User.findByPk(userId);
-
     if (therapist && user) {
-      await user.update({ role: "therapy" });
+      await user.update({ role: "therapist" });
     }
 
-    return res.status(201).json(therapist);
+    return res
+      .status(201)
+      .json({ therapist, message: "Therapist created successfully!" });
   } catch (error) {
-    // pass error to errorHandler middleware
     next(error);
   }
 };
@@ -92,22 +102,33 @@ export const updateTherapist = async (
   try {
     const { id } = req.params;
     const data = req.body;
+    const { diploma, license } = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
 
-    if (!id || !data) {
+    // Check if ID and data are provided
+    if (!id || Object.keys(data).length === 0) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
+    // Find the therapist by ID
     const therapist = await Therapist.findByPk(id);
 
     if (!therapist) {
       return res.status(404).json({ message: "Therapist not found" });
     }
 
-    await therapist.update(data);
+    // Update therapist data
+    await therapist.update({
+      ...data,
+      diploma: diploma && diploma[0] ? diploma[0].path : therapist.diploma,
+      license: license && license[0] ? license[0].path : therapist.license,
+    });
 
-    return res.status(200).json(therapist);
+    return res
+      .status(200)
+      .json({ therapist, message: "Therapist updated successfully!" });
   } catch (error) {
-    // pass error to errorHandler middleware
     next(error);
   }
 };

@@ -5,7 +5,7 @@ interface TherapistAttributes {
   id: string;
   personalInformation: object; // JSONB field
   diploma: string;
-  licence: string;
+  license: string;
   userId: string;
 }
 
@@ -19,7 +19,7 @@ class Therapist
   public id!: string;
   public personalInformation!: object;
   public diploma!: string;
-  public licence!: string;
+  public license!: string;
   public userId!: string;
 
   // Timestamps
@@ -43,7 +43,7 @@ Therapist.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    licence: {
+    license: {
       type: DataTypes.STRING,
       allowNull: false,
     },

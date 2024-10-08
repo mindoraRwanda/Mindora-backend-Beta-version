@@ -148,7 +148,7 @@ const startServer = async () => {
   });
   await modelAssociation();
 
-  await sequelize.sync({ alter: true });
+  // await sequelize.sync({ alter: true });
   server.listen(8080, () => {
     console.log("Server is running on port 8080 🚀");
   });
