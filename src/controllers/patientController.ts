@@ -27,6 +27,10 @@ export const createPatient = async (
       personalInformation,
       emergencyContact,
     });
+    const user = await User.findByPk(userId);
+    if (newPatient && user) {
+      await user.update({ role: "patient" });
+    }
 
     res.status(201).json(newPatient);
   } catch (error) {
