@@ -22,7 +22,7 @@
  *                 example: {age: 21, gender: male}
  *               emergencyContact:
  *                 type: object
- *                 example: {Jane Doe: +1234567890}
+ *                 example: {name: Jane Doe, email: jane@gmail.com, contact: +1234567890}
  *     responses:
  *       201:
  *         description: Patient created successfully
@@ -91,7 +91,7 @@
  *                 example: {age: 21, gender: male}
  *               emergencyContact:
  *                 type: string
- *                 example: {"Jane Doe": "+1234567890"}
+ *                 example: {name: Jane Doe, email: jane@gmail.com, contact: +1234567890}
  *     responses:
  *       200:
  *         description: Patient updated successfully
