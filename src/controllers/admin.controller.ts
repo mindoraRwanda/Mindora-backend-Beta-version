@@ -26,7 +26,7 @@ export const updateAccount = async (req:Request,res:Response) => {
         }
         await user.save();
         // generate JWT token
-        const token = Jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        const token = Jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '365d' });
         res.json({ user, token });
     }
     catch(error){
