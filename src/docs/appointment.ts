@@ -17,6 +17,7 @@
  *               - endTime
  *               - location
  *               - appointmentType
+ *               - appointmentSlot
  *               - status
  *             properties:
  *               patientId:
@@ -39,6 +40,9 @@
  *               appointmentType:
  *                 type: string
  *                 description: The type of the appointment (e.g., "Consultation")
+ *               appointmentSlot:
+ *                 type: string
+ *                 description: The ID of appointment slot
  *               status:
  *                 type: string
  *                 enum: ["Scheduled", "Canceled", "Rescheduled"]
