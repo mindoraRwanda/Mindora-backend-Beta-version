@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import Appointment from "../database/models/appointment";
 import Therapist from "../database/models/therapist";
 import Patient from "../database/models/patient";
+import { createAppointmentAvailableSlot } from "./appointmentSlotsController";
+import AppointmentAvailableSlots from "../database/models/appointmentAvailableSlots";
 
 // Create a new appointment
 export const createAppointment = async (
@@ -17,6 +19,7 @@ export const createAppointment = async (
       endTime,
       location,
       appointmentType,
+      appointmentSlot,
       status,
       notes,
     } = req.body;
@@ -27,10 +30,16 @@ export const createAppointment = async (
       !endTime ||
       !location ||
       !appointmentType ||
+      !appointmentSlot ||
       !status
     ) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
+    const slot = await AppointmentAvailableSlots.findByPk(appointmentSlot);
+    if (!slot) {
+      return res.status(404).json({ message: "Slot not found" });
+    }
+
     const appointment = await Appointment.create({
       patientId,
       therapistId,
@@ -41,6 +50,7 @@ export const createAppointment = async (
       status,
       notes,
     });
+    await slot.destroy();
     res.status(201).json(appointment);
   } catch (error) {
     // pass error to errorHandler middleware to be structured
