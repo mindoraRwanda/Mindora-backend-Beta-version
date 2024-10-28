@@ -3,7 +3,6 @@ import { register, login } from "../controllers/auth.controller";
 import {
   registerValidation,
   loginValidation,
-  resetPasswordValidation,
   forgotPasswordValidation,
 } from "../middleware/validation.middleware";
 import {
@@ -22,6 +21,6 @@ router.post(
 );
 router.post("/login", loginValidation, login);
 router.post("/forgot_password", forgotPasswordValidation, requestPasswordReset);
-router.post("/reset_password/:token", resetPasswordValidation, resetPassword);
+router.post("/reset_password/:token", resetPassword);
 
 export default router;

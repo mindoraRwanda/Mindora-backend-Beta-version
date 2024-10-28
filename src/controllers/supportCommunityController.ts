@@ -45,7 +45,7 @@ export const getSupportCommunities = async (
           through: {
             attributes: ["role", "status", "joinedAt"],
           },
-          attributes: ["id", "firstName", "lastName", "username", "email"],
+          attributes: ["id", "username"],
         },
       ],
     });
@@ -80,12 +80,12 @@ export const getUserSupportCommunities = async (
           {
             model: User,
             as: "members",
-            attributes: { exclude: ["password"] },
+            attributes: ["id", "username"],
           },
         ],
       },
       where: { id: userId },
-      attributes: { exclude: ["password"] },
+      attributes: ["id", "username"],
     });
 
     if (supportCommunities) {
@@ -119,7 +119,7 @@ export const getSupportCommunityById = async (
           through: {
             attributes: ["role", "status", "joinedAt"],
           },
-          attributes: { exclude: ["password"] },
+          attributes: ["id", "username"],
         },
         { model: CommunityPost, as: "posts" },
       ],

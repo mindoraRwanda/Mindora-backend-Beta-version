@@ -6,12 +6,14 @@ import {
   updateMessage,
   deleteMessage,
   getMessagesByChatId,
+  createMsg,
 } from "../controllers/messageController";
 import { uploadGeneral } from "../config/multerConfig";
 
 const router = Router();
 
 router.post("/messages", uploadGeneral.array("attachments"), createMessage);
+router.post("/message", createMsg);
 router.get("/messages", getMessages);
 router.get("/messages/:id", getMessageById);
 router.put("/messages/:id", updateMessage);

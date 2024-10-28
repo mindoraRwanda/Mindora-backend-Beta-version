@@ -4,6 +4,8 @@ import User from "../database/models/user";
 import { Op } from "sequelize";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import Message from "../database/models/message";
+import Chat from "../database/models/chat";
 
 dotenv.config();
 
@@ -72,4 +74,36 @@ cron.schedule("0 9 * * *", async () => {
   );
 
   console.log(`Sent reminders to ${subscriptions.length} users.`);
+});
+
+// Function to delete chat messages older than 24 hours
+const deleteOldMessages = async () => {
+  const cutoffTime = new Date();
+  cutoffTime.setDate(cutoffTime.getDate() - 1); // 24 hours ago
+  // cutoffTime.setHours(cutoffTime.getHours() - 1); // 1 hour ago
+
+  const deletedMessages = await Message.destroy({
+    where: {
+      createdAt: {
+        [Op.lte]: cutoffTime,
+        // [Op.gte]: cutoffTime, // Messages created in the last 1 hour
+      },
+      isRead: true, // Only delete messages that have been read
+    },
+  });
+
+  console.log(`Deleted ${deletedMessages} old messages from all chats.`);
+};
+
+// Scheduled job to run every 24 hours
+cron.schedule("0 0 * * *", async () => {
+  console.log("Running job to delete old chat messages...");
+
+  try {
+    await deleteOldMessages();
+  } catch (error) {
+    console.error("Error occurred while deleting messages:", error);
+  }
+
+  console.log("Old chat messages deletion task completed.");
 });
