@@ -12,12 +12,20 @@ export interface MessageAttributes {
   mediaUrl?: string;
   mediaSize?: number;
   mediaDuration?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface MessageCreationAttributes
   extends Optional<
     MessageAttributes,
-    "id" | "messageText" | "mediaUrl" | "mediaSize" | "mediaDuration"
+    | "id"
+    | "messageText"
+    | "mediaUrl"
+    | "mediaSize"
+    | "mediaDuration"
+    | "createdAt"
+    | "updatedAt"
   > {}
 
 class Message

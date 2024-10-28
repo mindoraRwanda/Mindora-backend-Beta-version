@@ -38,6 +38,29 @@ const determineMessageType = (mimeType: string) => {
   return "unknown file type";
 };
 
+export const createMsg = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { chatId, senderId, receiverId, messageType, isRead, messageText } =
+      req.body;
+
+    const msg = await Message.create({
+      chatId,
+      senderId,
+      receiverId,
+      messageType,
+      isRead,
+      messageText,
+    });
+    res.status(201).json(msg);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Create message with multiple file uploads
 export const createMessage = async (
   req: Request,

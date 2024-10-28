@@ -8,7 +8,7 @@ import {
   updateProfile,
 } from "../controllers/userController";
 import { uploadProfilePic } from "../config/multerConfig";
-import { changePasswordValidation } from "../middleware/validation.middleware";
+// import { changePasswordValidation } from "../middleware/validation.middleware";
 import { changePassword } from "../controllers/userController";
 
 const router = Router();
@@ -23,10 +23,6 @@ router.post(
   uploadProfilePic.single("profile"),
   updateProfile
 );
-router.post(
-  "/users/:userId/change_password",
-  changePasswordValidation,
-  changePassword
-);
+router.post("/users/:userId/change_password", changePassword);
 
 export default router;

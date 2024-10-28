@@ -17,7 +17,7 @@ const validatePassword = (field: string): ValidationChain =>
 // Define validation rules for registration
 export const registerValidation: ValidationChain[] = [
   body("email").isEmail().withMessage("Please enter a valid email address."),
-  validatePassword("password"),
+  // validatePassword("password"),
 ];
 
 // Define validation rules for login
@@ -31,13 +31,13 @@ export const forgotPasswordValidation: ValidationChain[] = [
   body("email").isEmail().withMessage("Please enter a valid email address."),
 ];
 
-// Define validation rules for passwords
-export const resetPasswordValidation: ValidationChain[] = [
-  validatePassword("password"),
-  validatePassword("confirmPassword"),
-];
-// Define validation rules for change password
-export const changePasswordValidation: ValidationChain[] = [
-  validatePassword("oldPassword"),
-  validatePassword("newPassword"),
-];
+// // Define validation rules for passwords
+// export const resetPasswordValidation: ValidationChain[] = [
+//   validatePassword("password"),
+//   validatePassword("confirmPassword"),
+// ];
+// // Define validation rules for change password
+// export const changePasswordValidation: ValidationChain[] = [
+//   validatePassword("oldPassword"),
+//   validatePassword("newPassword"),
+// ];
