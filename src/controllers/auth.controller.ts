@@ -10,6 +10,8 @@ import Subscription from "../database/models/subscription";
 import MembershipPlan from "../database/models/membershipPlan";
 import SubscriptionLinkedAccount from "../database/models/subscriptionLinkedAccount";
 import UserPreferences from "../database/models/userPreferences";
+import Therapist from "../database/models/therapist";
+import Patient from "../database/models/patient";
 
 dotenv.config();
 
@@ -97,7 +99,11 @@ export const login = async (
   try {
     const user = await User.findOne({
       where: { email },
-      include: { model: UserPreferences, as: "preferences" },
+      include: [
+        { model: UserPreferences, as: "preferences" },
+        { model: Therapist, as: "therapist" },
+        { model: Patient, as: "patient" },
+      ],
     });
 
     if (!user || !(await user.validatePassword(password))) {
