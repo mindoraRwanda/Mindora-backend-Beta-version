@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import AppointmentAvailableSlots from "../database/models/appointmentAvailableSlots";
 import Therapist from "../database/models/therapist";
+import User from "../database/models/user";
 
 export const createAppointmentAvailableSlot = async (
   req: Request,
@@ -55,6 +56,21 @@ export const getAllAppointmentAvailableSlots = async (
         {
           model: Therapist,
           as: "therapist",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: [
+                "firstName",
+                "lastName",
+                "profileImage",
+                "username",
+                "role",
+                "email",
+                "phoneNumber",
+              ],
+            },
+          ],
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
       ],
@@ -83,6 +99,21 @@ export const getAppointmentAvailableSlotById = async (
         {
           model: Therapist,
           as: "therapist",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: [
+                "firstName",
+                "lastName",
+                "profileImage",
+                "username",
+                "role",
+                "email",
+                "phoneNumber",
+              ],
+            },
+          ],
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
       ],
