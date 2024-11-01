@@ -76,6 +76,36 @@
 
 /**
  * @swagger
+ * /api/appointment_available_slots/therapists/{therapistId}:
+ *   get:
+ *     summary: Retrieve available slots for a specific therapist
+ *     tags: [Appointment available slots]
+ *     parameters:
+ *       - in: path
+ *         name: therapistId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the therapist whose available slots are to be retrieved
+ *     responses:
+ *       200:
+ *         description: A list of available appointment slots for the therapist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/AppointmentAvailableSlot'
+ *       400:
+ *         description: Missing therapist ID parameter
+ *       404:
+ *         description: Slots not found for the therapist
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /api/appointment_available_slots/{id}:
  *   get:
  *     summary: Get an appointment available slot by ID

@@ -84,6 +84,50 @@ export const getAllAppointmentAvailableSlots = async (
   }
 };
 
+export const getTherapistSlots = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { therapistId } = req.params;
+    if (!therapistId) {
+      return res.status(400).json({ message: "Missing therapist ID!" });
+    }
+    const slots = await AppointmentAvailableSlots.findAll({
+      where: { therapistId },
+      include: [
+        {
+          model: Therapist,
+          as: "therapist",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: [
+                "firstName",
+                "lastName",
+                "profileImage",
+                "username",
+                "role",
+                "email",
+                "phoneNumber",
+              ],
+            },
+          ],
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+      ],
+    });
+    if (!slots) {
+      return res.status(404).json({ message: "Slots not found" });
+    }
+    return res.status(200).json(slots);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAppointmentAvailableSlotById = async (
   req: Request,
   res: Response,
