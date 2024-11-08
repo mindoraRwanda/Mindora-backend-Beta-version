@@ -112,6 +112,43 @@
 
 /**
  * @swagger
+ * /api/therapists/{therapistId}/patients:
+ *   get:
+ *     summary: Get all patients being treated by a specific therapist
+ *     tags: [Therapists]
+ *     parameters:
+ *       - in: path
+ *         name: therapistId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: The ID of the therapist
+ *     responses:
+ *       200:
+ *         description: A list of patients being treated by the therapist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 patients:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Patient'
+ *                 count:
+ *                   type: integer
+ *                   description: The total number of patients being treated by the therapist
+ *       400:
+ *         description: Missing or invalid therapist ID
+ *       404:
+ *         description: No patients found for the specified therapist
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /api/therapists/{id}:
  *   put:
  *     summary: Update a therapist
@@ -237,6 +274,11 @@
  *           type: string
  *           format: uuid
  *           description: ID of the user associated with the therapist
+ *         patients:
+ *           type: array
+ *           description: List of patients being treated by the therapist
+ *           items:
+ *             $ref: '#/components/schemas/Patient'
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -245,4 +287,63 @@
  *           type: string
  *           format: date-time
  *           description: The time the therapist was last updated
+ *
+ *     Patient:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The UUID of the patient
+ *           example: "c1e7b770-8b9b-4fbd-b499-3d39f0d09599"
+ *         userId:
+ *           type: string
+ *           description: The ID of the associated user
+ *           example: "a1e7b770-9c9b-4fbd-a499-3d39f0d09588"
+ *         medicalProfile:
+ *           type: object
+ *           description: Medical details related to the patient
+ *           properties:
+ *             lastVisit:
+ *               type: string
+ *               format: date
+ *               description: Date of the last visit
+ *               example: "2025-07-20"
+ *             condition:
+ *               type: string
+ *               description: Medical condition of the patient
+ *               example: "Asthma"
+ *         personalInformation:
+ *           type: object
+ *           description: Personal information about the patient
+ *           properties:
+ *             age:
+ *               type: integer
+ *               description: Age of the patient
+ *               example: 21
+ *             gender:
+ *               type: string
+ *               description: Gender of the patient
+ *               example: "male"
+ *         emergencyContact:
+ *           type: object
+ *           description: Emergency contact details
+ *           properties:
+ *             name:
+ *               type: string
+ *               description: Name of the emergency contact
+ *               example: "Jane Doe"
+ *             phone:
+ *               type: string
+ *               description: Phone number of the emergency contact
+ *               example: "+1234567890"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The time the patient record was created
+ *           example: "2024-08-28T12:34:56Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: The time the patient record was last updated
+ *           example: "2024-08-28T12:34:56Z"
  */

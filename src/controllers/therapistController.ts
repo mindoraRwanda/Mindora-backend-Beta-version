@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import Therapist from "../database/models/therapist";
 import User from "../database/models/user";
+import Patient from "../database/models/patient";
+import TreatmentPlan from "../database/models/treatmentPlan";
 
 // Create a new therapist
 export const createTherapist = async (
@@ -90,6 +92,46 @@ export const getAllTherapists = async (
   } catch (error) {
     // pass error to errorHandler middleware
     next(error);
+  }
+};
+
+// get patients being treated by therapist
+export const therapistPatients = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { therapistId } = req.params;
+    if (!therapistId) {
+      return res.status(400).json({ message: "Missing therapist ID" });
+    }
+
+    const treatmentPlans = await TreatmentPlan.findAll({
+      where: { therapistId },
+    });
+
+    if (!treatmentPlans.length) {
+      return res
+        .status(404)
+        .json({ message: "No patients found for this therapist" });
+    }
+
+    const patientIds = treatmentPlans.map((plan) => plan.patientId);
+    const patients = await Patient.findAll({
+      where: { id: patientIds },
+      include: {
+        model: User,
+        as: "user",
+        attributes: {
+          exclude: ["password", "resetPasswordToken", "resetPasswordExpiry"],
+        },
+      },
+    });
+
+    return res.status(200).json({ patients, count: patients.length });
+  } catch (err) {
+    next(err);
   }
 };
 

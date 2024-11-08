@@ -1,6 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import AppointmentChange from "../database/models/appointmentChanges";
 import User from "../database/models/user";
+import Appointment from "../database/models/appointment";
+import { Op } from "sequelize";
+import Patient from "../database/models/patient";
+import Therapist from "../database/models/therapist";
+
+interface AppointmentChangeResult extends AppointmentChange {
+  cancelledBy?: User;
+}
+
+interface AppointmentResult extends Appointment {
+  appointmentChanges?: AppointmentChangeResult[];
+}
 
 // Create a new appointment change
 export async function createAppointmentChange(
@@ -133,3 +145,92 @@ export async function getAllAppointmentChanges(
     next(error);
   }
 }
+
+// Function to find appointments by roleId without specifying the role attribute name
+async function getAppointmentsChangeByUser(roleId: string) {
+  const appointments: AppointmentResult[] = await Appointment.findAll({
+    where: {
+      [Op.or]: [{ patientId: roleId }, { therapistId: roleId }],
+      status: "Canceled",
+    },
+    include: [
+      {
+        model: Patient,
+        as: "patient",
+        include: [
+          { model: User, as: "user", attributes: { exclude: ["password"] } },
+        ],
+      },
+      {
+        model: Therapist,
+        as: "therapist",
+        include: [
+          { model: User, as: "user", attributes: { exclude: ["password"] } },
+        ],
+      },
+      {
+        model: AppointmentChange,
+        as: "appointmentChanges",
+        include: [
+          {
+            model: User,
+            as: "cancelledBy",
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "username",
+              "profileImage",
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  return appointments.flatMap(
+    (appointment) =>
+      appointment.appointmentChanges?.map((change) => ({
+        appointmentType: appointment.appointmentType,
+        location: appointment.location,
+        newStartTime: change.newStartTime || "",
+        newEndTime: change.newEndTime || "",
+        reason: change.reason,
+        action: change.action,
+        cancelledBy: {
+          id: change.cancelledBy?.id,
+          firstName: change.cancelledBy?.firstName,
+          lastName: change.cancelledBy?.lastName,
+          username: change.cancelledBy?.username,
+          profileImage: change.cancelledBy?.profileImage,
+        },
+        cancelledTime: change.actionTime,
+      })) || []
+  );
+}
+
+export const getAppointmentChangesByRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { roleId } = req.params;
+
+    if (!roleId) {
+      return res.status(400).json({ message: "missing role ID" });
+    }
+
+    const cancelledAppointments = await getAppointmentsChangeByUser(roleId);
+
+    if (cancelledAppointments.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No cancelled appointments found" });
+    }
+
+    return res.status(200).json(cancelledAppointments);
+  } catch (error) {
+    next(error);
+  }
+};

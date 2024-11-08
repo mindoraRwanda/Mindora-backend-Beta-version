@@ -108,6 +108,20 @@ export const modelAssociation = async () => {
     onUpdate: "CASCADE",
   });
 
+  Appointment.hasMany(AppointmentChange, {
+    foreignKey: "appointmentId",
+    as: "appointmentChanges",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
+  AppointmentChange.belongsTo(Appointment, {
+    foreignKey: "appointmentId",
+    as: "appointment",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
   // appointment association
   Therapist.hasMany(AppointmentAvailableSlots, {
     foreignKey: "therapistId",
@@ -132,7 +146,7 @@ export const modelAssociation = async () => {
 
   AppointmentChange.belongsTo(User, {
     foreignKey: "actionBy",
-    as: "user",
+    as: "cancelledBy",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });

@@ -5,6 +5,7 @@ import {
   getAllTherapists,
   updateTherapist,
   deleteTherapist,
+  therapistPatients,
 } from "../controllers/therapistController";
 import { uploadGeneral } from "../config/multerConfig";
 
@@ -19,6 +20,7 @@ router.post(
   createTherapist
 );
 router.get("/therapists/:id", getTherapistById);
+router.get("/therapists/:therapistId/patients", therapistPatients);
 router.get("/therapists", getAllTherapists);
 router.put(
   "/therapists/:id",

@@ -144,6 +144,79 @@
 
 /**
  * @swagger
+ * /api/appointments/changes/{roleId}:
+ *   get:
+ *     summary: Retrieve all canceled appointment changes by role ID
+ *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: roleId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the role (patientId or therapistId) for which to retrieve canceled appointments
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved a list of canceled appointment changes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   appointmentType:
+ *                     type: string
+ *                     description: The type of the appointment
+ *                   location:
+ *                     type: string
+ *                     description: The location of the appointment
+ *                   newStartTime:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The new start time of the appointment if rescheduled
+ *                   newEndTime:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The new end time of the appointment if rescheduled
+ *                   reason:
+ *                     type: string
+ *                     description: The reason for cancellation or rescheduling
+ *                   action:
+ *                     type: string
+ *                     description: The action taken (e.g., "Canceled", "Rescheduled")
+ *                   cancelledBy:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         description: The ID of the user who canceled the appointment
+ *                       firstName:
+ *                         type: string
+ *                         description: The first name of the user who canceled the appointment
+ *                       lastName:
+ *                         type: string
+ *                         description: The last name of the user who canceled the appointment
+ *                       username:
+ *                         type: string
+ *                         description: The username of the user who canceled the appointment
+ *                       profileImage:
+ *                         type: string
+ *                         description: The profile image URL of the user who canceled the appointment
+ *                   cancelledTime:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The time when the appointment was canceled
+ *       400:
+ *         description: Missing role ID parameter
+ *       404:
+ *         description: No canceled appointments found for the given role ID
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /api/appointments/{id}:
  *   get:
  *     summary: Get an appointment by ID
