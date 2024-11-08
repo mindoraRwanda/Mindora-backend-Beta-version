@@ -47,6 +47,10 @@ AppointmentChange.init(
     appointmentId: {
       type: DataTypes.UUID,
       allowNull: false,
+      references: {
+        model: "appointments",
+        key: "id",
+      },
     },
     newStartTime: {
       type: DataTypes.STRING,
