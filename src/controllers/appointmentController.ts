@@ -4,6 +4,7 @@ import Therapist from "../database/models/therapist";
 import Patient from "../database/models/patient";
 import { createAppointmentAvailableSlot } from "./appointmentSlotsController";
 import AppointmentAvailableSlots from "../database/models/appointmentAvailableSlots";
+import User from "../database/models/user";
 
 // Create a new appointment
 export const createAppointment = async (
@@ -121,8 +122,16 @@ export const getTherapistAppointments = async (
     const appointments = await Appointment.findAll({
       where: { therapistId },
       include: [
-        { model: Therapist, as: "therapist" },
-        { model: Patient, as: "patient" },
+        {
+          model: Therapist,
+          as: "therapist",
+          include: [{ model: User, as: "user" }],
+        },
+        {
+          model: Patient,
+          as: "patient",
+          include: [{ model: User, as: "user" }],
+        },
       ],
     });
     if (appointments) {
@@ -151,8 +160,16 @@ export const getPatientAppointments = async (
     const appointments = await Appointment.findAll({
       where: { patientId },
       include: [
-        { model: Therapist, as: "therapist" },
-        { model: Patient, as: "patient" },
+        {
+          model: Therapist,
+          as: "therapist",
+          include: [{ model: User, as: "user" }],
+        },
+        {
+          model: Patient,
+          as: "patient",
+          include: [{ model: User, as: "user" }],
+        },
       ],
     });
     if (appointments) {
