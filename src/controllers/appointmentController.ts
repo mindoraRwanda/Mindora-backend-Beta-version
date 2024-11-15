@@ -118,7 +118,7 @@ export const getTherapistAppointments = async (
         .status(400)
         .json({ message: "Missing therapist ID parameter(s)!" });
     }
-    const appointments = await Appointment.findOne({
+    const appointments = await Appointment.findAll({
       where: { therapistId },
       include: [
         { model: Therapist, as: "therapist" },
@@ -148,7 +148,7 @@ export const getPatientAppointments = async (
         .status(400)
         .json({ message: "Missing patient ID parameter(s)!" });
     }
-    const appointments = await Appointment.findOne({
+    const appointments = await Appointment.findAll({
       where: { patientId },
       include: [
         { model: Therapist, as: "therapist" },
