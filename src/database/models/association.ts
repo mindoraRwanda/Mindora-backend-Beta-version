@@ -146,7 +146,7 @@ export const modelAssociation = async () => {
 
   AppointmentChange.belongsTo(User, {
     foreignKey: "actionBy",
-    as: "cancelledBy",
+    as: "changedBy",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
