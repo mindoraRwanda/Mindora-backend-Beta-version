@@ -61,7 +61,7 @@ export async function getAppointmentChangeById(
     }
     const appointmentChange = await AppointmentChange.findByPk(id, {
       include: [
-        { model: User, as: "user", attributes: { exclude: ["password"] } },
+        { model: User, as: "changedBy", attributes: { exclude: ["password"] } },
       ],
     });
 
@@ -133,7 +133,7 @@ export async function getAllAppointmentChanges(
   try {
     const appointmentChanges = await AppointmentChange.findAll({
       include: [
-        { model: User, as: "user", attributes: { exclude: ["password"] } },
+        { model: User, as: "changedBy", attributes: { exclude: ["password"] } },
       ],
     });
 
@@ -174,7 +174,7 @@ async function getAppointmentsChangeByUser(roleId: string) {
         include: [
           {
             model: User,
-            as: "cancelledBy",
+            as: "changedBy",
             attributes: [
               "id",
               "firstName",
