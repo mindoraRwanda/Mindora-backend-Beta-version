@@ -210,6 +210,8 @@ export async function getAllAppointmentChanges(
           : change.appointment?.patient?.user;
 
       return {
+        id: change.id,
+        appointmentId: change.appointment?.id,
         appointmentTYpe: change.appointment?.appointmentType,
         notes: change.appointment?.notes,
         newStartTime: change.newStartTime,
