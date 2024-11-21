@@ -7,11 +7,22 @@ import Patient from "../database/models/patient";
 import Therapist from "../database/models/therapist";
 
 interface AppointmentChangeResult extends AppointmentChange {
-  cancelledBy?: User;
+  changedBy?: User;
+  appointment?: AppointmentResult;
+}
+
+interface PatientResult extends Patient {
+  user?: User;
+}
+
+interface TherapistResult extends Therapist {
+  user?: User;
 }
 
 interface AppointmentResult extends Appointment {
   appointmentChanges?: AppointmentChangeResult[];
+  patient?: PatientResult;
+  therapist?: TherapistResult;
 }
 
 // Create a new appointment change
@@ -124,23 +135,94 @@ export async function deleteAppointmentChange(
   }
 }
 
-// Get all appointment changes
+// retrieve all appointment changes
 export async function getAllAppointmentChanges(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const appointmentChanges = await AppointmentChange.findAll({
-      include: [
-        { model: User, as: "changedBy", attributes: { exclude: ["password"] } },
-      ],
+    const appointmentChanges: AppointmentChangeResult[] | null =
+      await AppointmentChange.findAll({
+        include: [
+          {
+            model: Appointment,
+            as: "appointment",
+            include: [
+              {
+                model: Patient,
+                as: "patient",
+                include: [
+                  {
+                    model: User,
+                    as: "user",
+                    attributes: {
+                      exclude: [
+                        "password",
+                        "resetPasswordToken",
+                        "resetPasswordExpiry",
+                      ],
+                    },
+                  },
+                ],
+              },
+              {
+                model: Therapist,
+                as: "therapist",
+                include: [
+                  {
+                    model: User,
+                    as: "user",
+                    attributes: {
+                      exclude: [
+                        "password",
+                        "resetPasswordToken",
+                        "resetPasswordExpiry",
+                      ],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: User,
+            as: "changedBy",
+            attributes: {
+              exclude: [
+                "password",
+                "resetPasswordToken",
+                "resetPasswordExpiry",
+              ],
+            },
+          },
+        ],
+      });
+
+    if (!appointmentChanges?.length) {
+      return res.status(200).json([]);
+    }
+
+    const results = appointmentChanges.map((change) => {
+      const otherParticipant =
+        change.appointment?.patient?.id === change.actionBy
+          ? change.appointment?.therapist?.user
+          : change.appointment?.patient?.user;
+
+      return {
+        appointmentTYpe: change.appointment?.appointmentType,
+        notes: change.appointment?.notes,
+        newStartTime: change.newStartTime,
+        newEndTime: change.newEndTime,
+        reason: change.reason,
+        action: change.action,
+        actionTime: change.actionTime,
+        changedBy: change.changedBy,
+        otherParticipant: otherParticipant || null,
+      };
     });
 
-    if (!appointmentChanges) {
-      return res.status(404).json({ message: "Appointment change not found" });
-    }
-    return res.status(200).json(appointmentChanges);
+    return res.status(200).json(results);
   } catch (error) {
     next(error);
   }
@@ -197,12 +279,12 @@ async function getAppointmentsChangeByUser(roleId: string) {
         newEndTime: change.newEndTime || "",
         reason: change.reason,
         action: change.action,
-        cancelledBy: {
-          id: change.cancelledBy?.id,
-          firstName: change.cancelledBy?.firstName,
-          lastName: change.cancelledBy?.lastName,
-          username: change.cancelledBy?.username,
-          profileImage: change.cancelledBy?.profileImage,
+        changedBy: {
+          id: change.changedBy?.id,
+          firstName: change.changedBy?.firstName,
+          lastName: change.changedBy?.lastName,
+          username: change.changedBy?.username,
+          profileImage: change.changedBy?.profileImage,
         },
         cancelledTime: change.actionTime,
       })) || []
