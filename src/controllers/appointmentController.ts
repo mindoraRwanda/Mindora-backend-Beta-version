@@ -68,8 +68,40 @@ export const getAppointments = async (
   try {
     const appointments = await Appointment.findAll({
       include: [
-        { model: Therapist, as: "therapist" },
-        { model: Patient, as: "patient" },
+        {
+          model: Therapist,
+          as: "therapist",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
+        {
+          model: Patient,
+          as: "patient",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
       ],
     });
     res.status(200).json(appointments);
