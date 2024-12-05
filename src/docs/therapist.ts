@@ -171,9 +171,6 @@
  *                 type: object
  *                 description: Personal details of the therapist (optional)
  *                 properties:
- *                   name:
- *                     type: string
- *                     description: The name of the therapist
  *                   gender:
  *                     type: string
  *                     description: The gender of the therapist
@@ -184,9 +181,6 @@
  *                   address:
  *                     type: string
  *                     description: The address of the therapist
- *                   phoneNumber:
- *                     type: string
- *                     description: The phone number of the therapist
  *               diploma:
  *                 type: string
  *                 format: binary
@@ -248,9 +242,6 @@
  *           type: object
  *           description: Personal details of the therapist
  *           properties:
- *             name:
- *               type: string
- *               description: The name of the therapist
  *             gender:
  *               type: string
  *               description: The gender of the therapist
@@ -261,9 +252,6 @@
  *             address:
  *               type: string
  *               description: The address of the therapist
- *             phoneNumber:
- *               type: string
- *               description: The phone number of the therapist
  *         diploma:
  *           type: string
  *           description: Diploma or degree obtained by the therapist

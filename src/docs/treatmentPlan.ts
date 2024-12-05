@@ -73,6 +73,35 @@
  *       500:
  *         description: Internal server error
  */
+/**
+ * @swagger
+ * /api/treatment_plans/therapists/{therapistId}:
+ *   get:
+ *     summary: Get all treatment plans for a specific therapist
+ *     tags: [Treatment Plans]
+ *     parameters:
+ *       - in: path
+ *         name: therapistId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the therapist whose treatment plans are to be retrieved
+ *     responses:
+ *       200:
+ *         description: A list of treatment plans for the specified therapist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/TreatmentPlan'
+ *       400:
+ *         description: Missing therapist ID
+ *       404:
+ *         description: No treatment plans found for the specified therapist
+ *       500:
+ *         description: Internal server error
+ */
 
 /**
  * @swagger
