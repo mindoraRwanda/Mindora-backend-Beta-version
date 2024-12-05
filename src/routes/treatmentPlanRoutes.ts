@@ -5,12 +5,17 @@ import {
   getTreatmentPlanById,
   updateTreatmentPlan,
   deleteTreatmentPlan,
+  getTherapistTreatmentPlan,
 } from "../controllers/treatmentPlanController";
 
 const router = Router();
 
 router.post("/treatment_plans", createTreatmentPlan);
 router.get("/treatment_plans", getTreatmentPlans);
+router.get(
+  "/treatment_plans/therapists/:therapistId",
+  getTherapistTreatmentPlan
+);
 router.get("/treatment_plans/:id", getTreatmentPlanById);
 router.put("/treatment_plans/:id", updateTreatmentPlan);
 router.delete("/treatment_plans/:id", deleteTreatmentPlan);

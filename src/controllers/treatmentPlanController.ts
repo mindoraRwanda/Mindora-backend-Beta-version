@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import TreatmentPlan from "../database/models/treatmentPlan";
 import Patient from "../database/models/patient";
 import Therapist from "../database/models/therapist";
+import User from "../database/models/user";
 
 // Create a new treatment plan
 export const createTreatmentPlan = async (
@@ -47,8 +48,40 @@ export const getTreatmentPlans = async (
   try {
     const treatmentPlans = await TreatmentPlan.findAll({
       include: [
-        { model: Patient, as: "patient" },
-        { model: Therapist, as: "therapist" },
+        {
+          model: Patient,
+          as: "patient",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
+        {
+          model: Therapist,
+          as: "therapist",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
       ],
     });
     if (!treatmentPlans) {
@@ -57,6 +90,46 @@ export const getTreatmentPlans = async (
     res.status(200).json(treatmentPlans);
   } catch (error) {
     next(error);
+  }
+};
+
+export const getTherapistTreatmentPlan = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { therapistId } = req.params;
+    if (!therapistId) {
+      res.status(400).json({ message: "Missing therapist ID" });
+    }
+
+    const treatmentPlans = await TreatmentPlan.findAll({
+      where: { therapistId },
+      include: {
+        model: Therapist,
+        as: "therapist",
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: {
+              exclude: [
+                "password",
+                "resetPasswordToken",
+                "resetPasswordExpiry",
+              ],
+            },
+          },
+        ],
+      },
+    });
+    if (!treatmentPlans || treatmentPlans.length === 0) {
+      res.status(404).json({ message: "No treatment plan for therapist" });
+    }
+    res.status(200).json(treatmentPlans);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -73,8 +146,40 @@ export const getTreatmentPlanById = async (
     }
     const treatmentPlan = await TreatmentPlan.findByPk(id, {
       include: [
-        { model: Patient, as: "patient" },
-        { model: Therapist, as: "therapist" },
+        {
+          model: Patient,
+          as: "patient",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
+        {
+          model: Therapist,
+          as: "therapist",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
       ],
     });
     if (treatmentPlan) {
