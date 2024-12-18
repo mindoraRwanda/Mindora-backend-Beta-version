@@ -7,7 +7,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -22,6 +22,10 @@
  *               name:
  *                 type: string
  *                 description: The name of the support community
+ *               profile:
+ *                 type: string
+ *                 format: binary
+ *                 description: The path to the community's profile picture
  *               description:
  *                 type: string
  *                 description: A brief description of the support community
@@ -136,13 +140,17 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
  *               name:
  *                 type: string
  *                 description: The new name of the support community (optional)
+ *               profile:
+ *                 type: string
+ *                 format: binary
+ *                 description: The path to the community's profile picture
  *               description:
  *                 type: string
  *                 description: The new description of the support community (optional)

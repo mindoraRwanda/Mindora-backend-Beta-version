@@ -11,6 +11,7 @@ export const createSupportCommunity = async (
 ) => {
   try {
     const { moderatorId, name, description, isPrivate } = req.body;
+    const profile = req.file;
 
     if (!moderatorId || !name || !description || isPrivate === undefined) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
@@ -19,6 +20,7 @@ export const createSupportCommunity = async (
     const supportCommunity = await SupportCommunity.create({
       moderatorId,
       name,
+      profile: profile?.path,
       description,
       isPrivate,
     });
@@ -144,6 +146,7 @@ export const updateSupportCommunity = async (
   try {
     const { id } = req.params;
     const data = req.body;
+    const profile = req.file;
 
     if (!id || !data) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
@@ -152,7 +155,7 @@ export const updateSupportCommunity = async (
     const supportCommunity = await SupportCommunity.findByPk(id);
 
     if (supportCommunity) {
-      await supportCommunity.update(data);
+      await supportCommunity.update({ ...data, profile: profile?.path });
       return res.status(200).json(supportCommunity);
     } else {
       return res.status(404).json({ message: "Support community not found" });

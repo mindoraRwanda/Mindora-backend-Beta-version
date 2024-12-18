@@ -29,6 +29,8 @@ const storage = new CloudinaryStorage({
       resource_type = "image";
     } else if (file.mimetype.startsWith("video/")) {
       resource_type = "video";
+    } else if (file.mimetype.startsWith("/application")) {
+      resource_type = "application";
     }
     return {
       folder: "uploads",
