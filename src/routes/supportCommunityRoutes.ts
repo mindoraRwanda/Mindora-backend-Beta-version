@@ -7,11 +7,16 @@ import {
   updateSupportCommunity,
   deleteSupportCommunity,
 } from "../controllers/supportCommunityController";
+import { uploadProfilePic } from "../config/multerConfig";
 
 const router = Router();
 
 // Route to create a new support community
-router.post("/support-communities", createSupportCommunity);
+router.post(
+  "/support-communities",
+  uploadProfilePic.single("profile"),
+  createSupportCommunity
+);
 
 // Route to get all support communities
 router.get("/support-communities", getSupportCommunities);
@@ -23,7 +28,11 @@ router.get("/support-communities/user/:userId", getUserSupportCommunities);
 router.get("/support-communities/:id", getSupportCommunityById);
 
 // Route to update a specific support community by ID
-router.put("/support-communities/:id", updateSupportCommunity);
+router.put(
+  "/support-communities/:id",
+  uploadProfilePic.single("profile"),
+  updateSupportCommunity
+);
 
 // Route to delete a specific support community by ID
 router.delete("/support-communities/:id", deleteSupportCommunity);

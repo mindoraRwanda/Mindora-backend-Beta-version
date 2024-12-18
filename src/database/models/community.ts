@@ -5,12 +5,13 @@ interface SupportCommunityAttributes {
   id: string;
   moderatorId: string;
   name: string;
+  profile?: string;
   description: string;
   isPrivate: boolean;
 }
 
 interface SupportCommunityCreationAttributes
-  extends Optional<SupportCommunityAttributes, "id"> {}
+  extends Optional<SupportCommunityAttributes, "id" | "profile"> {}
 
 class SupportCommunity
   extends Model<SupportCommunityAttributes, SupportCommunityCreationAttributes>
@@ -19,6 +20,7 @@ class SupportCommunity
   public id!: string;
   public moderatorId!: string;
   public name!: string;
+  public profile?: string | undefined;
   public description!: string;
   public isPrivate!: boolean;
 
@@ -46,6 +48,10 @@ SupportCommunity.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    profile: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     description: {
       type: DataTypes.TEXT,
