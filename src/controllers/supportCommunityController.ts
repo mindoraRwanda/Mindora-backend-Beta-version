@@ -40,7 +40,23 @@ export const getSupportCommunities = async (
   try {
     const supportCommunities = await SupportCommunity.findAll({
       include: [
-        { model: CommunityPost, as: "posts" },
+        {
+          model: CommunityPost,
+          as: "posts",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
         {
           model: User,
           as: "members",
@@ -78,7 +94,23 @@ export const getUserSupportCommunities = async (
         model: SupportCommunity,
         as: "communities",
         include: [
-          { model: CommunityPost, as: "posts" },
+          {
+            model: CommunityPost,
+            as: "posts",
+            include: [
+              {
+                model: User,
+                as: "user",
+                attributes: {
+                  exclude: [
+                    "password",
+                    "resetPasswordToken",
+                    "resetPasswordExpiry",
+                  ],
+                },
+              },
+            ],
+          },
           {
             model: User,
             as: "members",
@@ -123,7 +155,23 @@ export const getSupportCommunityById = async (
           },
           attributes: ["id", "username"],
         },
-        { model: CommunityPost, as: "posts" },
+        {
+          model: CommunityPost,
+          as: "posts",
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: {
+                exclude: [
+                  "password",
+                  "resetPasswordToken",
+                  "resetPasswordExpiry",
+                ],
+              },
+            },
+          ],
+        },
       ],
     });
 
