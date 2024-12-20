@@ -100,22 +100,19 @@ export const updateCommunityPost = async (
     if (!id || !data) {
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
-    console.log("data:  ", data);
-    const files = req.files as Express.Multer.File[];
-    // Map the attachment paths to an array of strings
-    let attachments: Array<string> = [];
-    if (files && files.length > 0) {
-      console.log("files", files);
-      attachments = files.map((file) => file.path);
-    }
-    const communityPost = await CommunityPost.findByPk(id);
 
+    const files = req.files as Express.Multer.File[] | undefined;
+    // Map the attachment paths to an array of strings
+    const attachments = files?.map((file) => file.path) || [];
+
+    const communityPost = await CommunityPost.findByPk(id);
     if (communityPost) {
-      if (attachments && attachments.length > 0) {
-        await communityPost.update({ ...data, attachments });
-      } else {
-        await communityPost.update(data);
-      }
+      await communityPost.update({
+        ...data,
+        attachments:
+          attachments.length > 0 ? attachments : communityPost.attachments,
+      });
+
       return res.status(200).json(communityPost);
     } else {
       return res.status(404).json({ message: "Community post not found" });
