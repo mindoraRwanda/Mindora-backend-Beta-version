@@ -48,6 +48,9 @@ import LanguageSupport from "./languageSupport";
 import Translation from "./translation";
 import UserCommunity from "./userCommunity";
 import UserPreferences from "./userPreferences";
+import Role from "./role";
+import Permission from "./permission";
+import RolePermission from "./rolePermission";
 
 export const modelAssociation = async () => {
   // patient association
@@ -702,3 +705,15 @@ export const modelAssociation = async () => {
     foreignKey: "userId",
   });
 };
+
+// Permission Associations
+Role.belongsToMany(Permission, {
+  through: RolePermission,
+  as: "permissions",
+  foreignKey: "roleId",
+});
+Permission.belongsToMany(Role, {
+  through: RolePermission,
+  as: "roles",
+  foreignKey: "permissionId",
+});

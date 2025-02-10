@@ -67,6 +67,9 @@ import translationsRoutes from "./routes/translationRoutes";
 import resourcesRoutes from "./routes/resourcesRoutes";
 import userCommunityRoutes from "./routes/userCommunityRoutes";
 import userPreferenceRoutes from "./routes/userPreferencesRoutes";
+import permissionRoutes from "./routes/permissionRoutes";
+import roleRoutes from "./routes/roleRoutes";
+import rolePermissionRoutes from "./routes/rolePermissionRoutes";
 
 dotenv.config();
 
@@ -136,6 +139,9 @@ app.use("/api", translationsRoutes);
 app.use("/api", resourcesRoutes);
 app.use("/api", userCommunityRoutes);
 app.use("/api", userPreferenceRoutes);
+app.use("/api", permissionRoutes);
+app.use("/api", roleRoutes);
+app.use("/api", rolePermissionRoutes);
 
 // this should the last one
 app.use(errorHandler);
