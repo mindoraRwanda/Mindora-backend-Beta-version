@@ -12,6 +12,7 @@ import SubscriptionLinkedAccount from "../database/models/subscriptionLinkedAcco
 import UserPreferences from "../database/models/userPreferences";
 import Therapist from "../database/models/therapist";
 import Patient from "../database/models/patient";
+import Role from "../database/models/role";
 
 dotenv.config();
 
@@ -59,9 +60,10 @@ export const register = async (
       phoneNumber,
       profileImage: profile?.path,
     });
+    const role = await Role.findOne({ where: { name: newUser.role } });
     const preferences = await UserPreferences.create({ userId: newUser.id });
     const token = jwt.sign(
-      { id: newUser.id, role: newUser.role },
+      { id: newUser.id, role: newUser.role, roleId: role?.id },
       process.env.JWT_SECRET as string,
       { expiresIn: "1h" }
     );
@@ -132,15 +134,15 @@ export const login = async (
       ? subscription?.membershipPlan
       : linkedAccount?.subscription?.membershipPlan;
 
+    const role = await Role.findOne({ where: { name: user.role } });
+
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, role: user.role, roleId: role?.id },
       process.env.JWT_SECRET as string,
       {
         expiresIn: "1h",
       }
     );
-    console.log("plan: ", plan);
-    // localStorage.setItem('token', token);
     res.status(200).json({ token, user, membershipPlan: plan });
   } catch (error) {
     next(error);
