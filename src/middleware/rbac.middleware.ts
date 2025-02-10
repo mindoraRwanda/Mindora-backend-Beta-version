@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import Role, { RoleAttributes } from "../database/models/role";
 import Permission from "../database/models/permission";
-import redisClient from "../utils/redisCache.ts";
+// import redisClient from "../utils/redisCache.ts";
+import { cache } from "../utils/redisCache.ts";
 
 interface RolePermissions extends Role {
   permissions?: Array<Permission>;
@@ -42,7 +43,8 @@ export const authorize = (requiredPermission: string) => {
 
       let cachedPermissions;
 
-      cachedPermissions = await redisClient.get(cacheKey);
+      // cachedPermissions = await redisClient.get(cacheKey);
+      cachedPermissions = await cache.get(cacheKey);
 
       let permissions: string[];
       if (cachedPermissions) {
@@ -65,10 +67,11 @@ export const authorize = (requiredPermission: string) => {
         permissions = role.permissions
           ? role.permissions.map((p) => p.name)
           : [];
-
-        await redisClient.set(cacheKey, JSON.stringify(permissions), {
-          EX: 3600,
-        });
+        // replace temporirly redisClient with cache
+        // await redisClient.set(cacheKey, JSON.stringify(permissions), {
+        //   EX: 3600,
+        // });
+        cache.set(cacheKey, JSON.stringify(permissions));
       }
 
       if (permissions.includes(requiredPermission)) {
