@@ -1,15 +1,18 @@
-import { createClient } from "redis";
+// import { createClient } from "redis";
+import NodeCache from "node-cache";
 
-const redisClient = createClient({
-  url: "redis://localhost:6379", // Update with your Redis config
-});
+export const cache = new NodeCache({ stdTTL: 600 }); // Cache expires in 10 minutes
 
-redisClient.on("error", (err) => {
-  console.error("Redis Error:", err);
-});
+// const redisClient = createClient({
+//   url: "redis://localhost:6379", // Update with your Redis config
+// });
 
-(async () => {
-  await redisClient.connect();
-})();
+// redisClient.on("error", (err) => {
+//   console.error("Redis Error:", err);
+// });
 
-export default redisClient;
+// (async () => {
+//   await redisClient.connect();
+// })();
+
+// export default redisClient;
