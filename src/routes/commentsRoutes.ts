@@ -5,6 +5,7 @@ import {
   updateComment,
   deleteComment,
   getComments,
+  getPostComments,
 } from "../controllers/commentsController";
 import { uploadGeneral } from "../config/multerConfig";
 
@@ -16,6 +17,7 @@ router.post(
   createComment
 );
 router.get("/post/comments/:id", getCommentById);
+router.get("/post/:postId/comments", getPostComments);
 router.put(
   "/post/comments/:id",
   uploadGeneral.array("attachments", 5),
