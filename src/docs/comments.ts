@@ -173,6 +173,36 @@
 
 /**
  * @swagger
+ * /api/post/{postId}/comments:
+ *   get:
+ *     summary: Get all comments for a specific post
+ *     tags: [Comments]
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the post to retrieve comments for
+ *     responses:
+ *       200:
+ *         description: A list of comments for the post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
+ *       400:
+ *         description: Missing post ID
+ *       404:
+ *         description: Post comments not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Comment:

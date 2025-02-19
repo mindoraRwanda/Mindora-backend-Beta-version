@@ -63,6 +63,36 @@ export const getComments = async (
   }
 };
 
+// Get all comments for particular post
+export const getPostComments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { postId } = req.params;
+    if (!postId) {
+      res.status(400).json({ message: "Missing post ID!" });
+    }
+    const postComments = await Comment.findAll({
+      where: { postId: postId },
+      include: [
+        { model: CommunityPost, as: "post" },
+        { model: User, as: "user" },
+        { model: Comment, as: "parent_comment" },
+      ],
+    });
+
+    if (postComments) {
+      return res.status(200).json(postComments);
+    } else {
+      return res.status(404).json({ message: "Post comments not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get a comment by its ID
 export const getCommentById = async (
   req: Request,
