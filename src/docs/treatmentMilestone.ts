@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /api/treatment-milestones:
+ * /api/treatment_milestones:
  *   post:
  *     summary: Create a new treatment milestone
  *     tags: [Treatment milestones]
@@ -44,7 +44,7 @@
 
 /**
  * @swagger
- * /api/treatment-milestones:
+ * /api/treatment_milestones:
  *   get:
  *     summary: Get all treatment milestones
  *     tags: [Treatment milestones]
@@ -65,7 +65,7 @@
 
 /**
  * @swagger
- * /api/treatment-milestones/{id}:
+ * /api/treatment_milestones/{id}:
  *   get:
  *     summary: Get a single treatment milestone by ID
  *     tags: [Treatment milestones]
@@ -93,7 +93,7 @@
 
 /**
  * @swagger
- * /api/treatment-milestones/{id}:
+ * /api/treatment_milestones/{id}:
  *   put:
  *     summary: Update a treatment milestone
  *     tags: [Treatment milestones]
@@ -138,7 +138,7 @@
 
 /**
  * @swagger
- * /api/treatment-milestones/{id}:
+ * /api/treatment_milestones/{id}:
  *   delete:
  *     summary: Delete a treatment milestone
  *     tags: [Treatment milestones]
