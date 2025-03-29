@@ -3,6 +3,14 @@ import Therapist from "../database/models/therapist";
 import User from "../database/models/user";
 import Patient from "../database/models/patient";
 import TreatmentPlan from "../database/models/treatmentPlan";
+import { where } from "sequelize";
+
+interface personalInfo {
+  gender: string;
+  dateOfBirth: Date;
+  age: number;
+  address: string;
+}
 
 // Create a new therapist
 export const createTherapist = async (
@@ -16,6 +24,8 @@ export const createTherapist = async (
       [fieldname: string]: Express.Multer.File[];
     };
 
+    console.log("Inside create API");
+
     if (
       !personalInformation ||
       !diploma ||
@@ -27,9 +37,11 @@ export const createTherapist = async (
       return res.status(400).json({ message: "Missing parameter(s)!" });
     }
 
+    const personalInfo = JSON.parse(personalInformation);
+
     // Create therapist
     const therapist = await Therapist.create({
-      personalInformation,
+      personalInformation: personalInfo,
       diploma: diploma[0].path,
       license: license[0].path,
       userId,
@@ -38,7 +50,7 @@ export const createTherapist = async (
     // Find the user and update role
     const user = await User.findByPk(userId);
     if (therapist && user) {
-      await user.update({ role: "therapist" });
+      await user.update({ role: "Therapist" });
     }
 
     return res
@@ -143,14 +155,14 @@ export const updateTherapist = async (
 ) => {
   try {
     const { id } = req.params;
-    const data = req.body;
+    const { personalInformation } = req.body;
     const { diploma, license } = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
     // Check if ID and data are provided
-    if (!id || Object.keys(data).length === 0) {
-      return res.status(400).json({ message: "Missing parameter(s)!" });
+    if (!id) {
+      return res.status(400).json({ message: "Missing therapist ID!" });
     }
 
     // Find the therapist by ID
@@ -160,12 +172,16 @@ export const updateTherapist = async (
       return res.status(404).json({ message: "Therapist not found" });
     }
 
+    const personalInfo = JSON.parse(personalInformation);
+
     // Update therapist data
-    await therapist.update({
-      ...data,
-      diploma: diploma && diploma[0] ? diploma[0].path : therapist.diploma,
-      license: license && license[0] ? license[0].path : therapist.license,
-    });
+
+    if (personalInfo) therapist.personalInformation = personalInfo;
+
+    if (diploma && diploma[0]) therapist.diploma = diploma[0].path;
+    if (license && license[0]) therapist.license = license[0].path;
+
+    await therapist.save();
 
     return res
       .status(200)

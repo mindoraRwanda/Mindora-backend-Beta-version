@@ -29,9 +29,15 @@ const storage = new CloudinaryStorage({
       resource_type = "image";
     } else if (file.mimetype.startsWith("video/")) {
       resource_type = "video";
-    } else if (file.mimetype.startsWith("/application")) {
-      resource_type = "application";
+    } else if (file.mimetype.startsWith("application/")) {
+      resource_type = "raw";
     }
+    console.log(
+      "Format:",
+      mimeToFormatMap[file.mimetype] || undefined,
+      "resourceType:",
+      resource_type
+    );
     return {
       folder: "uploads",
       format: mimeToFormatMap[file.mimetype] || undefined, // Preserve original format if not found
@@ -76,9 +82,17 @@ const generalFileFilter = (
     path.extname(file.originalname).toLowerCase()
   );
   const mimetype = allowedTypes.test(file.mimetype);
-  // console.log("mimetype", file.mimetype, "mimeType: ", mimetype);
+  console.log(
+    "mimetype",
+    file.mimetype,
+    "mimeType: ",
+    mimetype,
+    "extname:",
+    extname
+  );
 
   if (extname && mimetype) {
+    console.log("passed");
     cb(null, true);
   } else {
     cb(
