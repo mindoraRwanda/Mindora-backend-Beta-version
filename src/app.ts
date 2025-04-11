@@ -70,6 +70,7 @@ import userPreferenceRoutes from "./routes/userPreferencesRoutes";
 import permissionRoutes from "./routes/permissionRoutes";
 import roleRoutes from "./routes/roleRoutes";
 import rolePermissionRoutes from "./routes/rolePermissionRoutes";
+import postReportRoutes from "./routes/postReportRoutes";
 
 dotenv.config();
 
@@ -142,6 +143,7 @@ app.use("/api", userPreferenceRoutes);
 app.use("/api", permissionRoutes);
 app.use("/api", roleRoutes);
 app.use("/api", rolePermissionRoutes);
+app.use("/api", postReportRoutes);
 
 // this should the last one
 app.use(errorHandler);
