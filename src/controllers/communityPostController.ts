@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import CommunityPost from "../database/models/communityPost";
 import SupportCommunity from "../database/models/community";
 import User from "../database/models/user";
+import PostReport from "../database/models/postReport";
 
 // Create a community post
 export const createCommunityPost = async (
@@ -44,6 +45,7 @@ export const getCommunityPosts = async (
       include: [
         { model: SupportCommunity, as: "community" },
         { model: User, as: "user" },
+        { model: PostReport, as: "reports" },
       ],
     });
 
@@ -74,6 +76,7 @@ export const getCommunityPostById = async (
       include: [
         { model: SupportCommunity, as: "community" },
         { model: User, as: "user" },
+        { model: PostReport, as: "reports" },
       ],
     });
 

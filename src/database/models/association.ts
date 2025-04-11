@@ -51,6 +51,7 @@ import UserPreferences from "./userPreferences";
 import Role from "./role";
 import Permission from "./permission";
 import RolePermission from "./rolePermission";
+import PostReport from "./postReport";
 
 export const modelAssociation = async () => {
   // patient association
@@ -716,4 +717,18 @@ Permission.belongsToMany(Role, {
   through: RolePermission,
   as: "roles",
   foreignKey: "permissionId",
+});
+
+// Post and Reports association
+CommunityPost.hasMany(PostReport, {
+  as: "reports",
+  foreignKey: "postId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+PostReport.belongsTo(CommunityPost, {
+  as: "post",
+  foreignKey: "postId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
