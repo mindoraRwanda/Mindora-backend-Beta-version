@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import PostReport from "../database/models/postReport";
+import User from "../database/models/user";
+import CommunityPost from "../database/models/communityPost";
 
 // Create a new report
 export const createReport = async (
@@ -36,7 +38,18 @@ export const getPostReports = async (
       res.status(400).json({ message: "Missing post ID" });
       return;
     }
-    const postReports = await PostReport.findAll({ where: { postId } });
+
+    const postReports = await PostReport.findAll({
+      where: { postId },
+      include: [
+        { model: User, as: "reportedBy" },
+        {
+          model: CommunityPost,
+          as: "post",
+          include: [{ model: User, as: "user" }],
+        },
+      ],
+    });
     if (!postReports || !postReports.length) {
       res.status(404).json({ message: "Not post reports found!" });
     }
@@ -53,7 +66,16 @@ export const getAllReports = async (
   next: NextFunction
 ) => {
   try {
-    const reports = await PostReport.findAll();
+    const reports = await PostReport.findAll({
+      include: [
+        { model: User, as: "reportedBy" },
+        {
+          model: CommunityPost,
+          as: "post",
+          include: [{ model: User, as: "user" }],
+        },
+      ],
+    });
     if (!reports || !reports.length) {
       res.status(404).json({ message: "Not reports found!" });
     }
