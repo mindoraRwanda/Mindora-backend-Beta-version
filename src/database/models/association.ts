@@ -732,3 +732,17 @@ PostReport.belongsTo(CommunityPost, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+
+// user and post Reports association
+User.hasMany(PostReport, {
+  as: "post_reports",
+  foreignKey: "reportedByUserId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+PostReport.belongsTo(User, {
+  as: "reportedBy",
+  foreignKey: "reportedByUserId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
