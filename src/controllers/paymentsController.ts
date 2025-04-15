@@ -50,6 +50,7 @@ export const getPayments = async (
         { model: User, as: "user" },
         { model: Invoice, as: "invoice" },
       ],
+      order: [["createdAt", "DESC"]], // Order by createdAt descending
     });
     if (payments.length > 0) {
       return res.status(200).json(payments);
@@ -79,6 +80,7 @@ export const getUserPayments = async (
         { model: User, as: "user" },
         { model: Invoice, as: "invoice" },
       ],
+      order: [["createdAt", "DESC"]], // Order by createdAt descending
     });
 
     if (payments.length > 0) {
